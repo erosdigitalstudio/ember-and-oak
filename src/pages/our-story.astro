@@ -1,0 +1,432 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import { url } from '../data/site';
+
+import heroImg from '../assets/img/dark-interior.jpg';
+import barInterior from '../assets/img/bar-interior.jpg';
+import martini from '../assets/img/martini-bar.jpg';
+import diningRoom from '../assets/img/dining-room.jpg';
+import chefFlame from '../assets/img/chef-flame.jpg';
+
+const timeline = [
+  { year: '1911', title: 'A warehouse by the water', text: 'A red-brick coffee roastery rises on Western Avenue, a block from the piers. For a century it smells of smoke and toasted beans.' },
+  { year: '2016', title: 'A fire is kindled', text: 'Chef Adrian Holt, home after a decade cooking over open flame in San Sebastián and Buenos Aires, meets sommelier Celeste Navarro over a bottle of Walla Walla Syrah. A plan begins on a napkin.' },
+  { year: '2018', title: 'The hearth is built', text: 'The old roasting room becomes a kitchen. A twelve-foot hearth is laid by hand, with a grate that rises and falls on a cast-iron wheel.' },
+  { year: '2019', title: 'Doors open', text: 'Ember & Oak serves its first ribeye on a rainy November night. The aging room holds forty primals; by spring it holds two hundred.' },
+  { year: '2023', title: 'The Cellar opens', text: 'Beneath the dining room, a vaulted private cellar opens for twenty-four guests, surrounded by four hundred labels.' },
+  { year: 'Today', title: 'Still cooking over fire', text: 'The same hearth, the same wheel, the same promise: the best of the Pacific Northwest, treated with patience.' },
+];
+
+const team = [
+  { initials: 'AH', name: 'Adrian Holt', role: 'Executive Chef & Co-Founder', bio: 'Trained in the asadores of the Basque Country and the parrillas of Buenos Aires. Believes the most important tool in the kitchen is patience.' },
+  { initials: 'CN', name: 'Celeste Navarro', role: 'Wine Director & Co-Founder', bio: 'Raised among the vineyards of the Yakima Valley. Built the cellar one Washington producer at a time.' },
+  { initials: 'ML', name: 'Mara Lindqvist', role: 'Pastry Chef', bio: 'Brings Nordic restraint and Northwest fruit to every dessert, from huckleberry to Rainier cherry.' },
+];
+
+const details = [
+  { k: 'Douglas fir', v: 'Reclaimed beams from the original 1911 roastery' },
+  { k: 'Cognac leather', v: 'Deep banquettes, hand-stitched in Portland' },
+  { k: 'Blackened steel', v: 'Forged by a Ballard metalworker for the open kitchen' },
+  { k: 'Twelve-foot hearth', v: 'Firebrick, oak and cherry, alight every service' },
+];
+---
+<Base
+  title="Our Story"
+  description="The story of Ember & Oak: a 1911 waterfront roastery turned wood-fired steakhouse, founded by Chef Adrian Holt and sommelier Celeste Navarro in Seattle."
+>
+  <PageHero eyebrow="Our Story · Est. 2019" image={heroImg} alt="A moody restaurant interior with warm pendant lights" position="center 40%">
+    <Fragment slot="title">Born of <em>smoke</em> &amp; brick</Fragment>
+    <Fragment slot="lead">
+      <p>A century-old roastery on Seattle’s waterfront, a hand-built hearth, and two friends who believed the Pacific Northwest deserved a steakhouse of its own.</p>
+    </Fragment>
+  </PageHero>
+
+  <section class="section">
+    <div class="container story-intro">
+      <p class="story-intro__drop" data-reveal="up">
+        Ember &amp; Oak began with a simple question: what would a great steakhouse look like if it grew out of this place, out of the rain, the forests, the cold Pacific, the vineyards east of the mountains, rather than being imported from somewhere else?
+      </p>
+      <div class="story-intro__cols" data-reveal-stagger>
+        <p>We found our answer in fire. Not the roaring, theatrical kind, but the slow, glowing heat of hardwood burned down to coals, the way people have cooked along this coast for thousands of years.</p>
+        <p>We found it in time, in the weeks our beef spends in the aging room, and in the years our winemaking neighbors have spent learning their land. And we found it in people: ranchers, fishermen, foragers and growers who are now part of our family.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline with scroll-drawn progress line -->
+  <section class="section timeline-section" aria-labelledby="tl-title">
+    <div class="container">
+      <p class="eyebrow">Chapters</p>
+      <h2 id="tl-title" class="h1" data-split style="margin-top:1.5rem">A century in the <em>making</em></h2>
+      <div class="timeline" data-timeline>
+        <span class="timeline__line" aria-hidden="true"><span data-timeline-fill></span></span>
+        <ol class="timeline__list" role="list">
+        {timeline.map((t) => (
+          <li class="timeline__item" data-tl-item>
+            <span class="timeline__dot" aria-hidden="true"></span>
+            <p class="timeline__year">{t.year}</p>
+            <div class="timeline__body">
+              <h3>{t.title}</h3>
+              <p>{t.text}</p>
+            </div>
+          </li>
+        ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- The room -->
+  <section class="section room" aria-labelledby="room-title">
+    <div class="container">
+      <div class="room__head">
+        <p class="eyebrow">The Room</p>
+        <h2 id="room-title" class="h1" data-split>Warm, low-lit, <em>alive</em></h2>
+      </div>
+      <div class="room__gallery">
+        <div class="room__a"><Photo src={barInterior} alt="The bar with backlit shelves of spirits and warm pendant lights" ratio="4 / 3" parallax sizes="(min-width: 900px) 60vw, 100vw" caption="The Oak Bar" /></div>
+        <div class="room__b" data-speed="0.5"><Photo src={martini} alt="A martini glass on a dark bar top, bottles glowing behind" ratio="3 / 4" sizes="(min-width: 900px) 30vw, 70vw" caption="The Hearth Martini" delay={0.1} /></div>
+        <div class="room__c"><Photo src={diningRoom} alt="An elegant dining room with tables set beneath warm lights" ratio="16 / 9" parallax sizes="(min-width: 900px) 55vw, 100vw" caption="The Dining Room" /></div>
+        <ul class="room__details" role="list" data-reveal-stagger>
+          {details.map((d) => (
+            <li><span>{d.k}</span><p>{d.v}</p></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="section team" aria-labelledby="team-title">
+    <div class="container team__grid">
+      <div class="team__head">
+        <p class="eyebrow">The People</p>
+        <h2 id="team-title" class="h2" data-split>The hands <em>behind</em> the fire</h2>
+        <div class="team__img">
+          <Photo src={chefFlame} alt="A cook working over high flame in the kitchen" ratio="1 / 1" sizes="(min-width: 900px) 35vw, 100vw" position="25% center" />
+        </div>
+      </div>
+      <ul class="team__list" role="list">
+        {team.map((m) => (
+          <li class="person" data-reveal="up">
+            <span class="person__mono" aria-hidden="true">{m.initials}</span>
+            <div>
+              <h3 class="person__name">{m.name}</h3>
+              <p class="person__role">{m.role}</p>
+              <p class="person__bio">{m.bio}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tight story-cta">
+    <div class="container story-cta__inner" data-reveal="up">
+      <p class="h2">Come write the <em style="font-style:italic;color:var(--accent-strong)">next chapter</em> with us.</p>
+      <div class="story-cta__actions">
+        <a class="btn" href={url('reservations/')} data-magnetic><span class="btn__label">Reserve a table</span><Icon name="arrow-right" /></a>
+        <a class="link" href={url('philosophy/')}>Our philosophy <Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .story-intro {
+    display: grid;
+    gap: var(--s-8);
+  }
+  .story-intro__drop {
+    font-family: var(--f-display);
+    font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3.1rem);
+    line-height: 1.18;
+    max-width: 30ch;
+  }
+  .story-intro__drop::first-letter {
+    float: left;
+    font-size: 3.6em;
+    line-height: 0.82;
+    padding: 0.06em 0.12em 0 0;
+    color: var(--accent);
+    font-style: italic;
+  }
+  .story-intro__cols {
+    display: grid;
+    gap: var(--s-6);
+    color: var(--text-muted);
+    font-size: var(--fs-md);
+    line-height: 1.8;
+  }
+  @media (min-width: 900px) {
+    .story-intro__cols {
+      grid-template-columns: 1fr 1fr;
+      max-width: 62rem;
+      margin-left: auto;
+      gap: var(--s-8);
+    }
+  }
+
+  /* Timeline */
+  .timeline-section {
+    background: var(--bg-deep);
+    border-block: 1px solid var(--line);
+  }
+  .timeline {
+    position: relative;
+    margin-top: var(--s-9);
+    padding-left: 2.5rem;
+  }
+  .timeline__list {
+    display: grid;
+    gap: var(--s-8);
+  }
+  .timeline__line {
+    position: absolute;
+    left: 0.45rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: var(--line-strong);
+  }
+  .timeline__line span {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--copper-400), var(--ember-500));
+    transform-origin: top;
+    transform: scaleY(1);
+  }
+  :global(.motion) .timeline__line span {
+    transform: scaleY(0);
+  }
+  .timeline__item {
+    position: relative;
+    display: grid;
+    gap: var(--s-3);
+  }
+  .timeline__dot {
+    position: absolute;
+    left: calc(-2.5rem + 0.45rem - 6px);
+    top: 0.85rem;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--bg-deep);
+    border: 1px solid var(--accent);
+    transition: background-color 500ms var(--ease-out), box-shadow 500ms var(--ease-out);
+  }
+  .timeline__item.is-lit .timeline__dot {
+    background: var(--ember-400);
+    border-color: var(--ember-400);
+    box-shadow: 0 0 0 6px rgb(240 90 36 / 0.18), 0 0 24px rgb(255 123 58 / 0.6);
+  }
+  .timeline__year {
+    font-family: var(--f-display);
+    font-size: clamp(2.75rem, 2rem + 3vw, 5rem);
+    line-height: 1;
+    color: var(--text-subtle);
+    transition: color 600ms var(--ease-out);
+  }
+  .timeline__item.is-lit .timeline__year {
+    color: var(--accent-strong);
+  }
+  .timeline__body h3 {
+    font-size: var(--fs-xl);
+    margin-bottom: var(--s-2);
+  }
+  .timeline__body p {
+    color: var(--text-muted);
+    max-width: 52ch;
+  }
+  @media (min-width: 900px) {
+    .timeline {
+      padding-left: 0;
+    }
+    .timeline__line {
+      left: calc(33% - 0.5px);
+    }
+    .timeline__item {
+      grid-template-columns: 33% 1fr;
+      gap: var(--s-8);
+    }
+    .timeline__year {
+      text-align: right;
+      padding-right: var(--s-8);
+    }
+    .timeline__dot {
+      left: calc(33% - 6.5px);
+      top: 1.1rem;
+    }
+    .timeline__body {
+      padding-top: 0.6rem;
+    }
+  }
+
+  /* Room */
+  .room__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+  .room__gallery {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .room__b {
+    width: 70%;
+    margin-left: auto;
+  }
+  .room__details {
+    display: grid;
+    gap: var(--s-5);
+    align-content: center;
+  }
+  .room__details li {
+    border-top: 1px solid var(--line);
+    padding-top: var(--s-4);
+  }
+  .room__details span {
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+    color: var(--accent-strong);
+  }
+  .room__details p {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  @media (min-width: 900px) {
+    .room__gallery {
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--s-7) var(--s-6);
+    }
+    .room__a {
+      grid-column: 1 / 8;
+    }
+    .room__b {
+      grid-column: 9 / 13;
+      width: auto;
+      margin-top: 30%;
+    }
+    .room__c {
+      grid-column: 2 / 9;
+    }
+    .room__details {
+      grid-column: 9 / 13;
+    }
+  }
+
+  /* Team */
+  .team__grid {
+    display: grid;
+    gap: var(--s-8);
+  }
+  @media (min-width: 900px) {
+    .team__grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: var(--s-9);
+      align-items: start;
+    }
+    .team__head {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .team__head {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .team__list {
+    display: grid;
+  }
+  .person {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-6);
+    padding-block: var(--s-7);
+    border-bottom: 1px solid var(--line);
+  }
+  .person:first-child {
+    border-top: 1px solid var(--line);
+  }
+  .person__mono {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: var(--fs-lg);
+    color: var(--accent-strong);
+    transition: background-color 500ms var(--ease-out), color 500ms var(--ease-out);
+  }
+  .person:hover .person__mono {
+    background: var(--accent-fill);
+    color: var(--on-accent);
+  }
+  .person__name {
+    font-size: var(--fs-xl);
+  }
+  .person__role {
+    margin-top: var(--s-1);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .person__bio {
+    margin-top: var(--s-3);
+    color: var(--text-muted);
+  }
+
+  .story-cta {
+    border-top: 1px solid var(--line);
+  }
+  .story-cta__inner {
+    display: grid;
+    gap: var(--s-6);
+    justify-items: start;
+  }
+  .story-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-6);
+    align-items: center;
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, hasMotion } from '../scripts/main';
+
+  const fill = document.querySelector('[data-timeline-fill]');
+  const items = document.querySelectorAll<HTMLElement>('[data-tl-item]');
+
+  if (hasMotion()) {
+    gsap.to(fill, {
+      scaleY: 1,
+      ease: 'none',
+      scrollTrigger: { trigger: '[data-timeline]', start: 'top 60%', end: 'bottom 60%', scrub: 0.6 },
+    });
+    items.forEach((item) => {
+      ScrollTrigger.create({
+        trigger: item,
+        start: 'top 60%',
+        onEnter: () => item.classList.add('is-lit'),
+        onLeaveBack: () => item.classList.remove('is-lit'),
+      });
+      gsap.from(item.querySelector('.timeline__body'), {
+        opacity: 0,
+        y: 30,
+        duration: 1.1,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: item, start: 'top 80%', once: true },
+      });
+    });
+  } else {
+    items.forEach((i) => i.classList.add('is-lit'));
+  }
+</script>

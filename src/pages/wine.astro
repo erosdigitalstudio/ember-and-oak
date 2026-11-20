@@ -1,0 +1,582 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import { wines } from '../data/wines';
+import { url } from '../data/site';
+
+import heroImg from '../assets/img/wine-pour.jpg';
+import toast from '../assets/img/wine-toast.jpg';
+
+const types = ['Sparkling', 'White', 'Rosé', 'Red', 'Dessert'] as const;
+const areas = [...new Set(wines.map((w) => w.area))];
+const countBy = (t: string) => wines.filter((w) => w.type === t).length;
+const fmt = (n: number) => n.toLocaleString('en-US');
+
+const pairings = [
+  { cut: '45-day Bone-In Ribeye', wine: 'L’Ecole Nº 41 Ferguson Vineyard', why: 'Walla Walla structure meets the nutty depth of long aging.' },
+  { cut: 'A5 Miyazaki Striploin', wine: 'Krug Grande Cuvée', why: 'Bubbles and acidity slice cleanly through melting marbling.' },
+  { cut: 'Hama Hama Oysters', wine: 'Pierre Péters Blanc de Blancs', why: 'Chalk and salinity, the oldest pairing in the book.' },
+];
+---
+<Base
+  title="Wine List"
+  description="Explore the Ember & Oak cellar: Washington and Oregon icons alongside Burgundy, Bordeaux and Champagne. Filter by style, region, price and wines by the glass."
+>
+  <PageHero eyebrow="The Cellar · 420 labels" image={heroImg} alt="Red wine being poured into a glass beside a candlelit table" short position="center 35%">
+    <Fragment slot="title">The <em>Cellar</em></Fragment>
+    <Fragment slot="lead">
+      <p>A selection from our list, rooted in Washington and Oregon and open to the great wine regions of the world. Ask our sommelier for older vintages and large formats.</p>
+    </Fragment>
+  </PageHero>
+
+  <section class="section wine-section" aria-labelledby="list-title">
+    <div class="container">
+      <div class="wine-head">
+        <h2 id="list-title" class="h2" data-split>Find your <em>bottle</em></h2>
+        <p class="wine-count" aria-live="polite" data-wine-count>Showing all {wines.length} wines</p>
+      </div>
+
+      <form class="wine-filters" data-wine-filters role="search" aria-label="Filter the wine list" onsubmit="return false">
+        <div class="field wine-filters__search">
+          <label for="wine-q">Search</label>
+          <div class="search-input">
+            <Icon name="search" />
+            <input id="wine-q" class="input" type="search" name="q" placeholder="Producer, grape, region…" autocomplete="off" />
+          </div>
+        </div>
+
+        <fieldset class="wine-filters__types">
+          <legend>Style</legend>
+          <div class="chips">
+            <button type="button" class="chip" aria-pressed="true" data-type="all">All <span class="chip__count">{wines.length}</span></button>
+            {types.map((t) => (
+              <button type="button" class="chip" aria-pressed="false" data-type={t}>{t} <span class="chip__count">{countBy(t)}</span></button>
+            ))}
+          </div>
+        </fieldset>
+
+        <div class="wine-filters__row">
+          <div class="field">
+            <label for="wine-area">Region</label>
+            <select id="wine-area" class="select" name="area">
+              <option value="">All regions</option>
+              {areas.map((a) => <option value={a}>{a}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="wine-price">Bottle price</label>
+            <select id="wine-price" class="select" name="price">
+              <option value="">Any price</option>
+              <option value="0-150">Under $150</option>
+              <option value="150-400">$150 – $400</option>
+              <option value="400-99999">Over $400</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="wine-sort">Sort by</label>
+            <select id="wine-sort" class="select" name="sort">
+              <option value="list">Cellar order</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+              <option value="producer">Producer A–Z</option>
+              <option value="vintage">Vintage: oldest first</option>
+            </select>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" name="glass" data-glass />
+            <span class="toggle__ui" aria-hidden="true"></span>
+            <span>By the glass only</span>
+          </label>
+          <button type="button" class="link wine-reset" data-wine-reset>Reset filters</button>
+        </div>
+      </form>
+
+      <ul class="wine-table" role="list" data-wine-list>
+        {wines.map((w, i) => (
+          <li
+            class="wine-row"
+            data-wine
+            data-i={i}
+            data-type={w.type}
+            data-area={w.area}
+            data-price={w.bottle}
+            data-glass={w.glass ? '1' : ''}
+            data-vintage={w.vintage === 'NV' ? '9999' : w.vintage}
+            data-producer={w.producer}
+            data-search={`${w.producer} ${w.name} ${w.grape} ${w.region} ${w.country} ${w.type} ${w.vintage}`.toLowerCase()}
+          >
+            <span class="wine-row__vintage tabular">{w.vintage}</span>
+            <div class="wine-row__main">
+              <h3 class="wine-row__producer">
+                {w.producer}
+                {w.pick && <span class="pick"><Icon name="spark" size={12} />Sommelier’s pick</span>}
+              </h3>
+              <p class="wine-row__name">{w.name}</p>
+              <p class="wine-row__notes">{w.notes}</p>
+            </div>
+            <div class="wine-row__origin">
+              <span>{w.region}</span>
+              <span class="subtle">{w.country} · {w.grape}</span>
+              <span class="wine-row__type">{w.type}</span>
+            </div>
+            <div class="wine-row__prices tabular">
+              {w.glass ? <span class="wine-row__glass"><small>Glass</small> ${w.glass}</span> : <span class="wine-row__glass wine-row__glass--none" aria-hidden="true">—</span>}
+              <span class="wine-row__bottle"><small>Bottle</small> ${fmt(w.bottle)}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div class="wine-empty" data-wine-empty hidden>
+        <p class="h3">No wines match those filters.</p>
+        <p class="muted">Try another region or a wider price range, or let our sommelier surprise you.</p>
+        <button type="button" class="btn btn--ghost btn--sm" data-wine-reset><span class="btn__label">Reset filters</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pairing" aria-labelledby="pair-title">
+    <div class="container pairing__grid">
+      <div class="pairing__media">
+        <Photo src={toast} alt="Friends raising glasses of red wine in a toast" ratio="4 / 5" parallax sizes="(min-width: 900px) 40vw, 100vw" />
+      </div>
+      <div class="pairing__text">
+        <p class="eyebrow">The Sommelier Suggests</p>
+        <h2 id="pair-title" class="h2" data-split>Three <em>perfect</em> matches</h2>
+        <ul class="pairs" role="list" data-reveal-stagger>
+          {pairings.map((p) => (
+            <li>
+              <p class="pairs__cut">{p.cut}</p>
+              <p class="pairs__wine"><Icon name="wine" size={18} /> {p.wine}</p>
+              <p class="pairs__why">{p.why}</p>
+            </li>
+          ))}
+        </ul>
+        <a class="link" href={url('reservations/')}>Reserve a table <Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .wine-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-bottom: var(--s-7);
+  }
+  .wine-count {
+    font-size: var(--fs-sm);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .wine-filters {
+    display: grid;
+    gap: var(--s-6);
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: var(--s-7);
+  }
+  .search-input {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    border-bottom: 1px solid var(--line-strong);
+    transition: border-color var(--d-base) var(--ease-out);
+  }
+  .search-input:focus-within {
+    border-bottom-color: var(--accent);
+  }
+  .search-input :global(svg) {
+    color: var(--accent);
+    flex: none;
+  }
+  .search-input .input {
+    border: 0;
+  }
+  .search-input .input:focus-visible {
+    box-shadow: none;
+  }
+  .wine-filters__types legend {
+    margin-bottom: var(--s-3);
+  }
+  .wine-filters__row {
+    display: grid;
+    gap: var(--s-5);
+    align-items: end;
+  }
+  @media (min-width: 720px) {
+    .wine-filters__row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .wine-filters__row {
+      grid-template-columns: repeat(3, 1fr) auto auto;
+    }
+  }
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-height: 3.25rem;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+  }
+  .toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .toggle__ui {
+    position: relative;
+    width: 2.75rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    transition:
+      background-color var(--d-base) var(--ease-out),
+      border-color var(--d-base) var(--ease-out);
+    flex: none;
+  }
+  .toggle__ui::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: transform 400ms var(--ease-out), background-color var(--d-base);
+  }
+  .toggle input:checked + .toggle__ui {
+    background: var(--accent-fill);
+    border-color: var(--accent-fill);
+  }
+  .toggle input:checked + .toggle__ui::after {
+    transform: translateX(1.25rem);
+    background: var(--charcoal-950);
+  }
+  .toggle input:focus-visible + .toggle__ui {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+  .wine-reset {
+    justify-self: start;
+    min-height: 44px;
+  }
+
+  .wine-table {
+    border-top: 1px solid var(--line);
+  }
+  .wine-row {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: var(--s-2) var(--s-5);
+    padding-block: var(--s-6);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .wine-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    height: 1px;
+    width: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 700ms var(--ease-out);
+  }
+  .wine-row:hover::before {
+    transform: scaleX(1);
+  }
+  .wine-row.is-hidden {
+    display: none;
+  }
+  .wine-row__vintage {
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+    color: var(--accent);
+    line-height: 1.3;
+  }
+  .wine-row__producer {
+    font-size: var(--fs-xl);
+    line-height: 1.15;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-4);
+  }
+  .pick {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--f-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    border: 1px solid rgb(211 149 102 / 0.5);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+  }
+  .wine-row__name {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: var(--fs-md);
+    color: var(--text-muted);
+  }
+  .wine-row__notes {
+    margin-top: var(--s-2);
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+    max-width: 52ch;
+  }
+  .wine-row__origin,
+  .wine-row__prices {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-4);
+    font-size: var(--fs-sm);
+  }
+  .wine-row__type {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .wine-row__prices {
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+    gap: var(--s-5);
+  }
+  .wine-row__prices small {
+    font-family: var(--f-sans);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-right: 0.25rem;
+  }
+  .wine-row__bottle {
+    color: var(--accent-strong);
+  }
+  .wine-row__glass--none {
+    display: none;
+  }
+  @media (min-width: 960px) {
+    .wine-row {
+      grid-template-columns: 4.5rem minmax(0, 1.5fr) minmax(0, 1fr) 11rem;
+      align-items: start;
+    }
+    .wine-row__origin {
+      grid-column: auto;
+      flex-direction: column;
+      gap: var(--s-1);
+      padding-top: 0.4rem;
+    }
+    .wine-row__prices {
+      grid-column: auto;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--s-1);
+      text-align: right;
+    }
+    .wine-row__glass--none {
+      display: inline;
+      color: var(--text-subtle);
+    }
+  }
+  .wine-empty {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+    padding-block: var(--s-8);
+  }
+
+  .pairing {
+    background: var(--bg-deep);
+    border-top: 1px solid var(--line);
+  }
+  .pairing__grid {
+    display: grid;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .pairing__grid {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: var(--s-9);
+    }
+  }
+  .pairing__text {
+    display: grid;
+    gap: var(--s-6);
+    justify-items: start;
+  }
+  .pairs {
+    width: 100%;
+    border-top: 1px solid var(--line);
+  }
+  .pairs li {
+    padding-block: var(--s-5);
+    border-bottom: 1px solid var(--line);
+  }
+  .pairs__cut {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+  .pairs__wine {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-top: var(--s-2);
+    font-family: var(--f-display);
+    font-size: var(--fs-xl);
+  }
+  .pairs__wine :global(svg) {
+    color: var(--accent);
+    flex: none;
+  }
+  .pairs__why {
+    margin-top: var(--s-1);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, hasMotion } from '../scripts/main';
+  import { Flip } from 'gsap/Flip';
+  gsap.registerPlugin(Flip);
+
+  const form = document.querySelector<HTMLFormElement>('[data-wine-filters]')!;
+  const list = document.querySelector<HTMLElement>('[data-wine-list]')!;
+  const rows = Array.from(list.querySelectorAll<HTMLElement>('[data-wine]'));
+  const count = document.querySelector('[data-wine-count]')!;
+  const empty = document.querySelector<HTMLElement>('[data-wine-empty]')!;
+  const typeChips = Array.from(form.querySelectorAll<HTMLButtonElement>('[data-type]'));
+  const q = form.querySelector<HTMLInputElement>('#wine-q')!;
+  const area = form.querySelector<HTMLSelectElement>('#wine-area')!;
+  const price = form.querySelector<HTMLSelectElement>('#wine-price')!;
+  const sort = form.querySelector<HTMLSelectElement>('#wine-sort')!;
+  const glass = form.querySelector<HTMLInputElement>('[data-glass]')!;
+
+  let type = 'all';
+
+  // Restore state from the URL (shareable, back-button friendly)
+  const params = new URLSearchParams(location.search);
+  if (params.get('type')) type = params.get('type')!;
+  q.value = params.get('q') ?? '';
+  area.value = params.get('area') ?? '';
+  price.value = params.get('price') ?? '';
+  sort.value = params.get('sort') ?? 'list';
+  glass.checked = params.get('glass') === '1';
+
+  const syncChips = () =>
+    typeChips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.type === type)));
+
+  const writeUrl = () => {
+    const p = new URLSearchParams();
+    if (type !== 'all') p.set('type', type);
+    if (q.value.trim()) p.set('q', q.value.trim());
+    if (area.value) p.set('area', area.value);
+    if (price.value) p.set('price', price.value);
+    if (sort.value !== 'list') p.set('sort', sort.value);
+    if (glass.checked) p.set('glass', '1');
+    const s = p.toString();
+    history.replaceState(null, '', s ? `?${s}` : location.pathname);
+  };
+
+  const apply = (animate = true) => {
+    const state = animate && hasMotion() ? Flip.getState(rows) : null;
+    const term = q.value.trim().toLowerCase();
+    const [min, max] = price.value ? price.value.split('-').map(Number) : [0, Infinity];
+    let shown = 0;
+
+    rows.forEach((r) => {
+      const p = Number(r.dataset.price);
+      const ok =
+        (type === 'all' || r.dataset.type === type) &&
+        (!area.value || r.dataset.area === area.value) &&
+        p >= min &&
+        p < max &&
+        (!glass.checked || r.dataset.glass === '1') &&
+        (!term || r.dataset.search!.includes(term));
+      r.classList.toggle('is-hidden', !ok);
+      if (ok) shown++;
+    });
+
+    const sorted = [...rows].sort((a, b) => {
+      switch (sort.value) {
+        case 'price-asc': return Number(a.dataset.price) - Number(b.dataset.price);
+        case 'price-desc': return Number(b.dataset.price) - Number(a.dataset.price);
+        case 'producer': return a.dataset.producer!.localeCompare(b.dataset.producer!);
+        case 'vintage': return Number(a.dataset.vintage) - Number(b.dataset.vintage);
+        default: return Number(a.dataset.i) - Number(b.dataset.i);
+      }
+    });
+    sorted.forEach((r) => list.appendChild(r));
+
+    count.textContent = shown === rows.length ? `Showing all ${rows.length} wines` : `Showing ${shown} of ${rows.length} wines`;
+    empty.hidden = shown > 0;
+    syncChips();
+    writeUrl();
+
+    if (state) {
+      Flip.from(state, {
+        duration: 0.7,
+        ease: 'expo.out',
+        absolute: false,
+        nested: true,
+        stagger: 0.012,
+        onEnter: (els) => gsap.fromTo(els, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.02 }),
+        onLeave: (els) => gsap.to(els, { opacity: 0, duration: 0.2 }),
+        onComplete: () => ScrollTrigger.refresh(),
+      });
+    } else {
+      ScrollTrigger.refresh();
+    }
+  };
+
+  typeChips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      type = chip.dataset.type!;
+      apply();
+    }),
+  );
+  let t: number | undefined;
+  q.addEventListener('input', () => {
+    clearTimeout(t);
+    t = window.setTimeout(() => apply(), 220);
+  });
+  [area, price, sort, glass].forEach((el) => el.addEventListener('change', () => apply()));
+  document.querySelectorAll('[data-wine-reset]').forEach((b) =>
+    b.addEventListener('click', () => {
+      type = 'all';
+      form.reset();
+      sort.value = 'list';
+      apply();
+      q.focus();
+    }),
+  );
+
+  apply(false);
+</script>

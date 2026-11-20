@@ -1,0 +1,868 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import { site, url } from '../data/site';
+
+import heroImg from '../assets/img/hero-steak-board.jpg';
+import chefFlame from '../assets/img/chef-flame.jpg';
+import rawFilets from '../assets/img/raw-filets.jpg';
+import steakFork from '../assets/img/steak-fork.jpg';
+import steakIron from '../assets/img/steak-cast-iron.jpg';
+import steakDark from '../assets/img/steak-dark.jpg';
+import tartare from '../assets/img/tartare-caviar.jpg';
+import salmon from '../assets/img/salmon.jpg';
+import winePour from '../assets/img/wine-pour.jpg';
+import tableEvening from '../assets/img/table-evening.jpg';
+import groupDining from '../assets/img/group-dining.jpg';
+import cocktail from '../assets/img/cocktail-pour.jpg';
+
+const signatures = [
+  { n: '01', name: 'Bone-In Ribeye', meta: '20 oz · 45 days', price: '108', img: steakFork, alt: 'Sliced dry-aged ribeye with a deep crust, a fork lifting a slice', desc: 'Our cornerstone. Aged until nutty and profound, seared hard over cherry wood.' },
+  { n: '02', name: 'The Oak Tomahawk', meta: '42 oz · 60 days', price: '245', img: steakIron, alt: 'Sliced steak with roasted potatoes on a cast-iron platter', desc: 'Finished in a bed of embers and carved at the table for two or three.' },
+  { n: '03', name: 'A5 Miyazaki', meta: 'BMS 10–12 · per oz', price: '38', img: steakDark, alt: 'Seared Wagyu slices with a pink center on dark greens', desc: 'Seared on binchotan for seconds. Fresh wasabi, smoked shoyu, nothing else.' },
+  { n: '04', name: 'The Sound', meta: 'Raw bar tower', price: '165', img: tartare, alt: 'A refined tartare topped with salmon roe and fresh herbs', desc: 'Oysters, Dungeness, spot prawns and geoduck: Puget Sound on ice.' },
+  { n: '05', name: 'Copper River King', meta: 'Seasonal · cedar plank', price: '58', img: salmon, alt: 'Seared king salmon with green vegetables on a black plate', desc: 'Wild king salmon, huckleberry beurre blanc, fiddlehead ferns.' },
+];
+
+const evening = [
+  { t: '4:00', title: 'The hearth is lit', text: 'Oregon white oak and Washington cherry burn down for an hour before the first steak meets the grate.' },
+  { t: '5:00', title: 'Doors open', text: 'The Oak Bar pours its first Manhattans. Oysters are shucked to order on hand-cut ice.' },
+  { t: '7:30', title: 'The dining room glows', text: 'Tomahawks are carved tableside. The sommelier decants a 2016 Lynch-Bages for table nine.' },
+  { t: '10:00', title: 'Baked Alaska, flambéed', text: 'Huckleberry, meringue, apple brandy and a flash of blue flame to close the evening.' },
+];
+---
+<Base title={site.name} description={site.description}>
+  <!-- ================= HERO ================= -->
+  <section class="hero" data-home-hero>
+    <div class="hero__media" data-hero-media>
+      <Image
+        src={heroImg}
+        alt="Sliced dry-aged steak resting on a dark wooden board"
+        widths={[768, 1280, 1920, 2200]}
+        sizes="100vw"
+        format="webp"
+        quality={78}
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+    <canvas class="hero__embers" data-embers aria-hidden="true"></canvas>
+    <div class="hero__shade" aria-hidden="true"></div>
+
+    <div class="container hero__content" data-hero-content>
+      <p class="eyebrow" data-reveal="fade" data-hero>Seattle · Pacific Northwest Steakhouse</p>
+      <h1 class="hero__title" data-split="hero">
+        Where fire<br /> meets the <em>Northwest</em>
+      </h1>
+      <div class="hero__bottom">
+        <p class="lead" data-reveal="up" data-hero data-delay="0.4">
+          Dry-aged beef, A5 Wagyu and the cold-water treasures of Puget Sound, cooked over Pacific Northwest oak on Seattle’s waterfront.
+        </p>
+        <div class="hero__ctas" data-reveal="up" data-hero data-delay="0.55">
+          <a class="btn" href={url('reservations/')} data-magnetic>
+            <span class="btn__label">Reserve a table</span><Icon name="arrow-right" />
+          </a>
+          <a class="btn btn--ghost" href={url('menu/')}>
+            <span class="btn__label">View the menu</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__side" aria-hidden="true">
+      <span>47.6062° N</span><span class="hero__side-line"></span><span>122.3321° W</span>
+    </div>
+    <div class="hero__cue">
+      <span class="scroll-cue" data-reveal="fade" data-hero data-delay="0.9"><span class="scroll-cue__line" aria-hidden="true"></span>Discover</span>
+    </div>
+  </section>
+
+  <!-- ================= MARQUEE ================= -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      {[0, 1].map(() => (
+        <div class="marquee__group">
+          {['Dry-aged in house', 'A5 Miyazaki Wagyu', 'Hood Canal oysters', 'Dungeness crab', 'Walla Walla Cabernet', 'Oak & cherry fire'].map((t) => (
+            <span class="marquee__item">{t}<Icon name="spark" /></span>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+  <p class="sr-only">Specialties: dry-aged beef, A5 Miyazaki Wagyu, Hood Canal oysters, Dungeness crab, Washington wines, oak and cherry wood fire.</p>
+
+  <!-- ================= STATEMENT ================= -->
+  <section class="section statement">
+    <div class="container statement__grid">
+      <div class="statement__text">
+        <p class="eyebrow">The Ember &amp; Oak way</p>
+        <p class="statement__quote" data-scrub-text>
+          We cook the way the Northwest lives: close to the fire, patient with time, and loyal to the forests and waters that surround us.
+        </p>
+        <a href={url('philosophy/')} class="link" style="margin-top:2.5rem">
+          Our culinary philosophy <Icon name="arrow-right" />
+        </a>
+      </div>
+      <div class="statement__images">
+        <div class="statement__img statement__img--a" data-speed="0.6">
+          <Photo src={chefFlame} alt="A chef working a flaming pan in a professional kitchen" ratio="4 / 5" sizes="(min-width: 900px) 30vw, 70vw" position="30% center" />
+        </div>
+        <div class="statement__img statement__img--b" data-speed="-0.4">
+          <Photo src={rawFilets} alt="Three thick raw filet medallions on butcher paper with salt and peppercorns" ratio="1 / 1" sizes="(min-width: 900px) 24vw, 60vw" delay={0.15} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SIGNATURES (horizontal on desktop) ================= -->
+  <section class="signatures" data-signatures aria-labelledby="sig-title">
+    <div class="signatures__track" data-sig-track>
+      <div class="signatures__intro">
+        <p class="eyebrow">Signatures</p>
+        <h2 id="sig-title" class="h1" data-split>The cuts that <em>define</em> us</h2>
+        <p class="lead" data-reveal="up">Five plates our guests return for, each a conversation between fire, time and an exceptional ingredient.</p>
+        <a href={url('menu/')} class="link" data-reveal="fade">Full dinner menu <Icon name="arrow-right" /></a>
+      </div>
+      {signatures.map((s) => (
+        <article class="sig-card">
+          <a href={url('menu/')} class="sig-card__link" data-cursor-label="Menu" aria-label={`${s.name}: see it on the menu`}>
+            <div class="sig-card__media media">
+              <Image src={s.img} alt={s.alt} widths={[480, 800, 1100]} sizes="(min-width: 1024px) 34vw, 92vw" format="webp" quality={76} loading="lazy" />
+            </div>
+          </a>
+          <div class="sig-card__body">
+            <span class="sig-card__n">{s.n}</span>
+            <div>
+              <h3 class="sig-card__name">{s.name}</h3>
+              <p class="sig-card__meta">{s.meta}</p>
+            </div>
+            <span class="sig-card__price tabular">${s.price}</span>
+          </div>
+          <p class="sig-card__desc">{s.desc}</p>
+        </article>
+      ))}
+    </div>
+    <div class="signatures__progress" aria-hidden="true"><span data-sig-progress></span></div>
+  </section>
+
+  <!-- ================= NUMBERS ================= -->
+  <section class="section section--tight numbers" aria-label="Ember & Oak in numbers">
+    <div class="container">
+      <hr class="rule" data-reveal="rule" />
+      <dl class="numbers__grid" data-reveal-stagger>
+        <div><dt>Days of dry-aging, at most</dt><dd><span data-count="60">60</span></dd></div>
+        <div><dt>Degrees Fahrenheit at the hearth</dt><dd><span data-count="900">900</span>°</dd></div>
+        <div><dt>Labels in the cellar</dt><dd><span data-count="420">420</span></dd></div>
+        <div><dt>Northwest farms, ranches &amp; boats</dt><dd><span data-count="38">38</span></dd></div>
+      </dl>
+      <hr class="rule" data-reveal="rule" />
+    </div>
+  </section>
+
+  <!-- ================= RAW BAR ================= -->
+  <section class="section rawbar">
+    <div class="container rawbar__grid">
+      <div class="rawbar__media">
+        <Photo src={tartare} alt="Tartare crowned with glistening salmon roe and a basil leaf" ratio="4 / 5" parallax sizes="(min-width: 900px) 45vw, 100vw" />
+      </div>
+      <div class="rawbar__text">
+        <p class="eyebrow">The Raw Bar</p>
+        <h2 class="h1" data-split>Cold water, <em>clean</em> salt</h2>
+        <p class="lead" data-reveal="up">
+          Before the fire, the sea. Our shuckers work in full view of the dining room, opening oysters pulled from Hood Canal that morning and cracking Dungeness crab landed at Westport.
+        </p>
+        <ul class="oysters" role="list" data-reveal-stagger>
+          <li><span class="oysters__name">Hama Hama</span><span class="oysters__origin">Hood Canal, WA</span><span class="oysters__note">bright brine · cucumber</span></li>
+          <li><span class="oysters__name">Kusshi</span><span class="oysters__origin">Deep Bay, BC</span><span class="oysters__note">sweet · clean · petite</span></li>
+          <li><span class="oysters__name">Totten Inlet Virginica</span><span class="oysters__origin">South Sound, WA</span><span class="oysters__note">firm · mineral · nutty</span></li>
+          <li><span class="oysters__name">Dungeness Crab</span><span class="oysters__origin">Westport, WA</span><span class="oysters__note">sweet · rich · seasonal</span></li>
+        </ul>
+        <a href={url('menu/#raw-bar')} class="link" data-reveal="fade">The raw bar menu <Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WINE ================= -->
+  <section class="wine-band" aria-labelledby="wine-title">
+    <div class="wine-band__bg media--parallax media" aria-hidden="true">
+      <Image src={winePour} alt="" widths={[768, 1280, 1920]} sizes="100vw" format="webp" quality={72} loading="lazy" />
+    </div>
+    <div class="container wine-band__content">
+      <p class="eyebrow">The Cellar</p>
+      <h2 id="wine-title" class="display" data-split>Four hundred labels.<br /><em>One</em> conversation.</h2>
+      <p class="lead" data-reveal="up">
+        From Walla Walla Cabernet and Willamette Pinot Noir to grand cru Burgundy, our sommelier pairs every cut with the bottle it was waiting for.
+      </p>
+      <div data-reveal="up" data-delay="0.15">
+        <a href={url('wine/')} class="btn" data-magnetic><span class="btn__label">Explore the wine list</span><Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= AN EVENING ================= -->
+  <section class="section evening" aria-labelledby="evening-title">
+    <div class="container evening__grid">
+      <div class="evening__head">
+        <p class="eyebrow">An evening at Ember &amp; Oak</p>
+        <h2 id="evening-title" class="h1" data-split>From first flame to <em>last pour</em></h2>
+        <div class="evening__img">
+          <Photo src={cocktail} alt="A bartender pouring an amber cocktail over a large ice cube" ratio="4 / 3" sizes="(min-width: 900px) 40vw, 100vw" />
+        </div>
+      </div>
+      <ol class="evening__list" role="list">
+        {evening.map((e) => (
+          <li class="evening__item" data-reveal="up">
+            <span class="evening__time tabular">{e.t}<small>pm</small></span>
+            <div>
+              <h3>{e.title}</h3>
+              <p>{e.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= PRIVATE DINING ================= -->
+  <section class="section private">
+    <div class="container private__grid">
+      <div class="private__media">
+        <Photo src={tableEvening} alt="An elegant candlelit table set for dinner" ratio="3 / 2" hover sizes="(min-width: 900px) 55vw, 100vw" cursorLabel="View" />
+      </div>
+      <div class="private__text">
+        <p class="eyebrow">Private Dining</p>
+        <h2 class="h2" data-split>Gather around <em>the fire</em></h2>
+        <p class="lead" data-reveal="up">
+          Three private spaces for eight to one hundred and twenty guests, from the cedar-lined Library to a full evening buyout overlooking Elliott Bay.
+        </p>
+        <a href={url('private-dining/')} class="link" data-reveal="fade">Plan your event <Icon name="arrow-right" /></a>
+      </div>
+      <div class="private__small" data-speed="0.5">
+        <Photo src={groupDining} alt="Friends sharing dinner and laughing around a long table" ratio="4 / 5" sizes="(min-width: 900px) 22vw, 60vw" delay={0.2} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESERVE CTA ================= -->
+  <section class="section reserve-cta" aria-labelledby="reserve-title">
+    <div class="reserve-cta__glow" aria-hidden="true"></div>
+    <div class="container reserve-cta__inner">
+      <p class="eyebrow eyebrow--plain">Reservations</p>
+      <h2 id="reserve-title" class="reserve-cta__title" data-split>Your table is <em>waiting</em></h2>
+      <p class="lead" data-reveal="up" style="margin-inline:auto;text-align:center">
+        Tuesday to Sunday from five o’clock. Booking opens thirty days in advance.
+      </p>
+      <div class="reserve-cta__actions" data-reveal="up" data-delay="0.1">
+        <a class="btn" href={url('reservations/')} data-magnetic><span class="btn__label">Book a table</span><Icon name="arrow-right" /></a>
+        <a class="link" href={site.phoneHref}><Icon name="phone" /> {site.phone}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-items: end;
+    overflow: hidden;
+    isolation: isolate;
+    padding-bottom: clamp(2.5rem, 2rem + 4vw, 6rem);
+    padding-top: calc(var(--header-h) + 3rem);
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    will-change: transform;
+  }
+  .hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 60% center;
+  }
+  .hero__embers {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .hero__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      linear-gradient(180deg, rgb(11 9 8 / 0.7) 0%, rgb(11 9 8 / 0.1) 30%, rgb(11 9 8 / 0.35) 60%, rgb(16 13 12 / 0.97) 100%),
+      linear-gradient(90deg, rgb(11 9 8 / 0.75) 0%, rgb(11 9 8 / 0) 65%);
+  }
+  .hero__title {
+    margin-top: var(--s-5);
+    font-size: var(--fs-hero);
+    line-height: 0.9;
+    letter-spacing: -0.025em;
+    max-width: 11ch;
+  }
+  .hero__title em {
+    font-style: italic;
+    color: var(--accent-strong);
+  }
+  .hero__bottom {
+    margin-top: clamp(2rem, 1rem + 3vw, 3.5rem);
+    display: grid;
+    gap: var(--s-6);
+    align-items: end;
+  }
+  @media (min-width: 900px) {
+    .hero__bottom {
+      grid-template-columns: minmax(0, 30rem) auto;
+      justify-content: space-between;
+    }
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .hero__side {
+    position: absolute;
+    right: var(--gutter);
+    top: 50%;
+    display: none;
+    align-items: center;
+    gap: var(--s-4);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.3em;
+    color: var(--text-subtle);
+    writing-mode: vertical-rl;
+    transform: translateY(-50%);
+  }
+  .hero__side-line {
+    width: 1px;
+    height: 4rem;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+  .hero__cue {
+    position: absolute;
+    left: 50%;
+    bottom: 1.5rem;
+    transform: translateX(-50%);
+    display: none;
+  }
+  @media (min-width: 1200px) {
+    .hero__side {
+      display: flex;
+    }
+  }
+  @media (min-width: 900px) and (min-height: 760px) {
+    .hero__cue {
+      display: block;
+    }
+  }
+
+  /* ---------- Statement ---------- */
+  .statement__grid {
+    display: grid;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .statement__grid {
+      grid-template-columns: 1.1fr 1fr;
+      gap: var(--s-9);
+    }
+  }
+  .statement__quote {
+    margin-top: var(--s-6);
+    font-family: var(--f-display);
+    font-size: clamp(1.9rem, 1.2rem + 2.6vw, 3.6rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+  .statement__images {
+    position: relative;
+    min-height: 28rem;
+  }
+  .statement__img--a {
+    width: 72%;
+  }
+  .statement__img--b {
+    position: absolute;
+    width: 52%;
+    right: 0;
+    bottom: -8%;
+    border: 8px solid var(--bg);
+  }
+  .statement__images :global(figure) {
+    margin: 0;
+  }
+
+  /* ---------- Signatures ---------- */
+  .signatures {
+    position: relative;
+    padding-block: var(--section);
+    overflow: hidden;
+  }
+  .signatures__track {
+    display: grid;
+    gap: var(--s-8);
+    padding-inline: var(--gutter);
+  }
+  .signatures__intro {
+    display: grid;
+    gap: var(--s-5);
+    align-content: center;
+    justify-items: start;
+    max-width: 30rem;
+  }
+  .sig-card__link {
+    display: block;
+  }
+  .sig-card__media {
+    aspect-ratio: 4 / 5;
+  }
+  .sig-card__media :global(img) {
+    transition: transform 1.4s var(--ease-out);
+  }
+  .sig-card:hover .sig-card__media :global(img) {
+    transform: scale(1.05);
+  }
+  .sig-card__body {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--s-4);
+    align-items: baseline;
+    padding-top: var(--s-5);
+    margin-top: var(--s-5);
+    border-top: 1px solid var(--line);
+  }
+  .sig-card__n {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+  .sig-card__name {
+    font-size: var(--fs-xl);
+  }
+  .sig-card__meta {
+    margin-top: var(--s-1);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+  .sig-card__price {
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+    color: var(--accent-strong);
+  }
+  .sig-card__desc {
+    margin-top: var(--s-3);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    max-width: 34ch;
+    padding-left: calc(var(--s-4) + 1.4rem);
+  }
+  .signatures__progress {
+    display: none;
+  }
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .signatures__track {
+      grid-template-columns: 1fr 1fr;
+    }
+    .signatures__intro {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 1024px) {
+    /* Static fallback (reduced motion / no JS): a refined 3-column grid */
+    .signatures__track {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .signatures__intro {
+      grid-column: span 1;
+    }
+    :global(.motion) .signatures {
+      padding-block: 0;
+      height: 100svh;
+      display: flex;
+      align-items: center;
+    }
+    :global(.motion) .signatures__track {
+      display: flex;
+      align-items: center;
+      gap: clamp(2rem, 4vw, 5rem);
+      padding-inline: var(--gutter) 12vw;
+      width: max-content;
+      will-change: transform;
+    }
+    :global(.motion) .signatures__intro {
+      width: 30vw;
+      max-width: 28rem;
+      flex: none;
+    }
+    :global(.motion) .sig-card {
+      width: clamp(20rem, 27vw, 30rem);
+      flex: none;
+    }
+    :global(.motion) .sig-card:nth-child(odd) {
+      transform: translateY(6vh);
+    }
+    :global(.motion) .sig-card__media {
+      aspect-ratio: auto;
+      height: min(58vh, 36rem);
+    }
+    :global(.motion) .signatures__progress {
+      display: block;
+      position: absolute;
+      left: var(--gutter);
+      right: var(--gutter);
+      bottom: 2.5rem;
+      height: 1px;
+      background: var(--line);
+    }
+    .signatures__progress span {
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform-origin: left;
+      transform: scaleX(0);
+    }
+  }
+  @media (min-width: 1024px) and (max-height: 640px) {
+    :global(.motion) .sig-card__desc {
+      display: none;
+    }
+  }
+
+  /* ---------- Numbers ---------- */
+  .numbers__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--s-7) var(--s-5);
+    padding-block: var(--s-8);
+  }
+  @media (min-width: 900px) {
+    .numbers__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .numbers__grid div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .numbers__grid dd {
+    order: -1;
+  }
+  .numbers__grid dd {
+    font-family: var(--f-display);
+    font-size: clamp(3.25rem, 2rem + 4.5vw, 6.5rem);
+    line-height: 0.9;
+    color: var(--text);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .numbers__grid dt {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    max-width: 16ch;
+  }
+
+  /* ---------- Raw bar ---------- */
+  .rawbar__grid {
+    display: grid;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .rawbar__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-9);
+    }
+  }
+  .rawbar__text {
+    display: grid;
+    gap: var(--s-5);
+    justify-items: start;
+  }
+  .oysters {
+    width: 100%;
+    margin-block: var(--s-4);
+    border-top: 1px solid var(--line);
+  }
+  .oysters li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--s-1) var(--s-4);
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--line);
+    transition: padding var(--d-base) var(--ease-out);
+  }
+  .oysters li:hover {
+    padding-left: var(--s-3);
+  }
+  .oysters__name {
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+  }
+  .oysters__origin {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    align-self: center;
+  }
+  .oysters__note {
+    grid-column: 1 / -1;
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+  }
+
+  /* ---------- Wine band ---------- */
+  .wine-band {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    padding-block: var(--section);
+  }
+  .wine-band__bg {
+    position: absolute !important;
+    inset: 0;
+    z-index: -2;
+    border-radius: 0;
+  }
+  .wine-band__bg :global(img) {
+    object-position: center 30%;
+  }
+  .wine-band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(90deg, rgb(11 9 8 / 0.92) 0%, rgb(11 9 8 / 0.65) 50%, rgb(11 9 8 / 0.3) 100%),
+      linear-gradient(180deg, var(--bg) 0%, transparent 18%, transparent 82%, var(--bg) 100%);
+  }
+  .wine-band__content {
+    display: grid;
+    gap: var(--s-6);
+    justify-items: start;
+  }
+  .wine-band__content .display {
+    max-width: 14ch;
+  }
+
+  /* ---------- Evening ---------- */
+  .evening__grid {
+    display: grid;
+    gap: var(--s-8);
+  }
+  @media (min-width: 900px) {
+    .evening__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-9);
+      align-items: start;
+    }
+    .evening__head {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .evening__head {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .evening__list {
+    display: grid;
+  }
+  .evening__item {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: var(--s-5);
+    padding-block: var(--s-7);
+    border-top: 1px solid var(--line);
+  }
+  .evening__item:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .evening__time {
+    font-family: var(--f-display);
+    font-size: var(--fs-2xl);
+    line-height: 1;
+    color: var(--accent-strong);
+  }
+  .evening__time small {
+    font-family: var(--f-sans);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.15em;
+    margin-left: 0.2em;
+    color: var(--text-subtle);
+  }
+  .evening__item h3 {
+    font-size: var(--fs-xl);
+    margin-bottom: var(--s-3);
+  }
+  .evening__item p {
+    color: var(--text-muted);
+  }
+  @media (max-width: 520px) {
+    .evening__item {
+      grid-template-columns: 1fr;
+      gap: var(--s-3);
+    }
+  }
+
+  /* ---------- Private ---------- */
+  .private__grid {
+    display: grid;
+    gap: var(--s-7);
+    align-items: center;
+  }
+  .private__text {
+    display: grid;
+    gap: var(--s-5);
+    justify-items: start;
+  }
+  .private__small {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .private__grid {
+      grid-template-columns: 1.3fr 1fr 0.55fr;
+      gap: var(--s-8);
+    }
+    .private__small {
+      display: block;
+      align-self: end;
+    }
+  }
+
+  /* ---------- Reserve CTA ---------- */
+  .reserve-cta {
+    overflow: hidden;
+    text-align: center;
+    border-top: 1px solid var(--line);
+  }
+  .reserve-cta__glow {
+    position: absolute;
+    left: 50%;
+    bottom: -40%;
+    width: min(70rem, 140vw);
+    aspect-ratio: 2 / 1;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgb(240 90 36 / 0.32), rgb(192 122 75 / 0.12) 55%, transparent 75%);
+    filter: blur(20px);
+    pointer-events: none;
+    animation: breathe 7s ease-in-out infinite alternate;
+  }
+  @keyframes breathe {
+    from {
+      opacity: 0.7;
+      transform: translateX(-50%) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) scale(1.05);
+    }
+  }
+  .reserve-cta__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--s-6);
+  }
+  .reserve-cta__title {
+    font-size: var(--fs-hero);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+  .reserve-cta__title :global(em) {
+    font-style: italic;
+    color: var(--accent-strong);
+  }
+  .reserve-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-6);
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, onReady, hasMotion } from '../scripts/main';
+  import { initEmbers } from '../scripts/embers';
+
+  const motion = hasMotion();
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-embers]');
+  if (canvas && motion) initEmbers(canvas);
+
+  if (motion) {
+    // Hero: slow settle on load, then the photo deepens and the copy drifts away as you scroll.
+    const media = document.querySelector('[data-hero-media]');
+    const content = document.querySelector('[data-hero-content]');
+    gsap.fromTo(media, { scale: 1.15 }, { scale: 1, duration: 2.8, ease: 'expo.out', delay: 0.1 });
+    gsap.to(media, {
+      yPercent: 14,
+      ease: 'none',
+      scrollTrigger: { trigger: '[data-home-hero]', start: 'top top', end: 'bottom top', scrub: true },
+    });
+    gsap.to(content, {
+      yPercent: -18,
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: { trigger: '[data-home-hero]', start: '30% top', end: 'bottom top', scrub: true },
+    });
+
+    // Signatures: pinned horizontal gallery on large screens only.
+    const mm = gsap.matchMedia();
+    mm.add('(min-width: 1024px)', () => {
+      const section = document.querySelector<HTMLElement>('[data-signatures]');
+      const track = document.querySelector<HTMLElement>('[data-sig-track]');
+      const progress = document.querySelector('[data-sig-progress]');
+      if (!section || !track) return;
+      const distance = () => track.scrollWidth - window.innerWidth;
+      const tween = gsap.to(track, {
+        x: () => -distance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${distance()}`,
+          pin: true,
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+          onUpdate: (self) => gsap.set(progress, { scaleX: self.progress }),
+        },
+      });
+      // Each photo eases in as it enters from the right.
+      gsap.utils.toArray<HTMLElement>('.sig-card').forEach((card) => {
+        const img = card.querySelector('img');
+        gsap.fromTo(
+          img,
+          { scale: 1.25 },
+          {
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: { trigger: card, containerAnimation: tween, start: 'left right', end: 'center center', scrub: true },
+          },
+        );
+      });
+    });
+
+    onReady(() => ScrollTrigger.refresh());
+  }
+</script>

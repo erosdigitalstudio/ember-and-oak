@@ -1,0 +1,623 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+
+import heroImg from '../assets/img/table-evening.jpg';
+import library from '../assets/img/dark-interior.jpg';
+import cellar from '../assets/img/wine-toast.jpg';
+import hearth from '../assets/img/dining-room.jpg';
+import buyout from '../assets/img/waterfront.jpg';
+
+const rooms = [
+  {
+    id: 'library',
+    name: 'The Library',
+    seated: '8 – 14',
+    reception: '20',
+    minimum: '$2,500',
+    img: library,
+    alt: 'A moody, low-lit room with warm pendant lamps',
+    text: 'Cedar shelves of first editions and old cookbooks, a single long table of Douglas fir and a window onto the hearth. Ideal for intimate celebrations and executive dinners.',
+    features: ['Private entrance', 'Hearth-view window', 'AV for presentations'],
+  },
+  {
+    id: 'cellar',
+    name: 'The Cellar',
+    seated: '16 – 24',
+    reception: '40',
+    minimum: '$5,000',
+    img: cellar,
+    alt: 'Guests toasting with glasses of red wine',
+    text: 'A vaulted brick room beneath the dining room, surrounded by four hundred labels. Your sommelier hosts the evening and opens bottles from our reserve list.',
+    features: ['Dedicated sommelier', 'Reserve-list access', 'Candlelit vault'],
+  },
+  {
+    id: 'hearth',
+    name: 'The Hearth Room',
+    seated: '30 – 60',
+    reception: '90',
+    minimum: '$12,000',
+    img: hearth,
+    alt: 'A warm dining room with many tables beneath pendant lights',
+    text: 'A semi-private room alongside the open kitchen, with a front-row view of the fire. Built for rehearsal dinners, milestone birthdays and team celebrations.',
+    features: ['Open-kitchen view', 'Custom menus', 'Tableside carving'],
+  },
+  {
+    id: 'buyout',
+    name: 'Full Buyout',
+    seated: 'up to 120',
+    reception: '180',
+    minimum: 'On request',
+    img: buyout,
+    alt: 'A waterfront terrace overlooking the water and mountains at dusk',
+    text: 'The entire restaurant, the Oak Bar and the waterfront terrace, exclusively yours. Our events team designs every detail, from the first cocktail to the last ember.',
+    features: ['Terrace & Oak Bar', 'Dedicated events team', 'Bespoke programming'],
+  },
+];
+
+const packages = [
+  { name: 'The Oak', price: '165', items: ['Raw bar canapés', 'Little Gem Caesar', 'Choice of filet, NY strip or king salmon', 'Shared sides', 'Burnt Basque cheesecake'] },
+  { name: 'The Ember', price: '225', items: ['Oysters and Dungeness crab cocktail', 'Wagyu tartare', 'Choice of 45-day ribeye or bone-in filet', 'Shared sides & sauces', 'Baked Alaska, flambéed'], featured: true },
+  { name: 'The Hearth', price: '310', items: ['The Sound seafood tower', 'A5 Miyazaki course', 'Tomahawk carved tableside', 'Seasonal sides & truffle', 'Dessert & cheese service'] },
+];
+
+const faqs = [
+  { q: 'How far in advance should we book?', a: 'We recommend three to six months for weekend evenings and the holiday season, and four to eight weeks for weekday dinners. Shorter notice is often possible; just ask.' },
+  { q: 'Can menus be customized?', a: 'Every package is a starting point. Our chefs regularly design bespoke menus for dietary needs, cultural traditions and special celebrations.' },
+  { q: 'What does the food & beverage minimum include?', a: 'Minimums apply to food and beverages before tax and a 22% service charge. Room fees are waived when the minimum is met.' },
+  { q: 'Do you offer AV and decor?', a: 'The Library and Hearth Room include a screen and sound system. Florals, printed menus and place cards can be arranged through our events team.' },
+];
+---
+<Base
+  title="Private Dining"
+  description="Private dining at Ember & Oak in Seattle: four spaces for 8 to 120 guests, from the cedar-lined Library to a full waterfront buyout. Explore rooms and request an event."
+>
+  <PageHero eyebrow="Private Dining & Events" image={heroImg} alt="A candlelit dinner table with plated courses and wine glasses" position="center 50%">
+    <Fragment slot="title">Gather around <em>the fire</em></Fragment>
+    <Fragment slot="lead">
+      <p>Four private spaces for eight to one hundred and twenty guests, each with its own character, all with the same fire at heart.</p>
+    </Fragment>
+    <Fragment slot="aside">
+      <a class="btn" href="#inquire"><span class="btn__label">Request an event</span><Icon name="arrow-right" /></a>
+    </Fragment>
+  </PageHero>
+
+  <!-- Room explorer (accessible tabs) -->
+  <section class="section rooms" aria-labelledby="rooms-title">
+    <div class="container">
+      <div class="rooms__head">
+        <p class="eyebrow">The Spaces</p>
+        <h2 id="rooms-title" class="h1" data-split>Choose your <em>room</em></h2>
+      </div>
+
+      <div class="rooms__tabs" role="tablist" aria-label="Private dining rooms" data-tabs>
+        {rooms.map((r, i) => (
+          <button
+            class="room-tab"
+            role="tab"
+            id={`tab-${r.id}`}
+            aria-controls={`panel-${r.id}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            type="button"
+          >
+            <span class="room-tab__n tabular">{String(i + 1).padStart(2, '0')}</span>
+            <span class="room-tab__name">{r.name}</span>
+            <span class="room-tab__cap"><Icon name="users" size={14} /> {r.seated}</span>
+          </button>
+        ))}
+      </div>
+
+      <div class="rooms__panels">
+        {rooms.map((r, i) => (
+          <div
+            class="room-panel"
+            role="tabpanel"
+            id={`panel-${r.id}`}
+            aria-labelledby={`tab-${r.id}`}
+            hidden={i !== 0}
+            tabindex="0"
+            data-panel
+          >
+            <div class="room-panel__media media">
+              <Image src={r.img} alt={r.alt} widths={[640, 1024, 1500]} sizes="(min-width: 1000px) 58vw, 100vw" format="webp" quality={76} loading={i === 0 ? 'lazy' : 'lazy'} />
+            </div>
+            <div class="room-panel__info">
+              <h3 class="h2">{r.name}</h3>
+              <p class="muted">{r.text}</p>
+              <dl class="room-panel__facts">
+                <div><dt>Seated</dt><dd>{r.seated}</dd></div>
+                <div><dt>Reception</dt><dd>{r.reception}</dd></div>
+                <div><dt>Minimum</dt><dd>{r.minimum}</dd></div>
+              </dl>
+              <ul class="room-panel__features" role="list">
+                {r.features.map((f) => <li><Icon name="check" size={16} /> {f}</li>)}
+              </ul>
+              <a class="link" href="#inquire" data-room-pick={r.id}>Inquire about {r.name} <Icon name="arrow-right" /></a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages -->
+  <section class="section packages" aria-labelledby="pkg-title">
+    <div class="container">
+      <div class="packages__head">
+        <p class="eyebrow">Menus</p>
+        <h2 id="pkg-title" class="h2" data-split>Three ways to <em>feast</em></h2>
+        <p class="lead" data-reveal="up">Per guest, before beverages, tax and service. Wine pairings from $95 per guest.</p>
+      </div>
+      <div class="packages__grid" data-reveal-stagger="0.1">
+        {packages.map((p) => (
+          <article class:list={['package', p.featured && 'package--featured']}>
+            {p.featured && <span class="package__badge">Most requested</span>}
+            <h3 class="package__name">{p.name}</h3>
+            <p class="package__price tabular"><span>$</span>{p.price}<small>per guest</small></p>
+            <ul role="list">
+              {p.items.map((it) => <li>{it}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Inquiry form -->
+  <section class="section inquiry" id="inquire" aria-labelledby="inq-title">
+    <div class="container inquiry__grid">
+      <div class="inquiry__intro">
+        <p class="eyebrow">Inquire</p>
+        <h2 id="inq-title" class="h2" data-split>Let’s plan your <em>evening</em></h2>
+        <p class="lead" data-reveal="up">Share a few details and our events team would reply within one business day.</p>
+        <ul class="inquiry__contact" role="list" data-reveal-stagger>
+          <li><Icon name="mail" /> <a href={`mailto:${site.events}`}>{site.events}</a></li>
+          <li><Icon name="phone" /> <a href={site.phoneHref}>{site.phone}</a></li>
+        </ul>
+      </div>
+
+      <div class="inquiry__formwrap">
+        <form class="form" data-inquiry novalidate>
+          <div class="demo-note">
+            <Icon name="info" />
+            <p><strong>Demonstration form.</strong> It validates your input and simulates a reply, but nothing is sent or stored until a backend is connected.</p>
+          </div>
+          <div class="form-row form-row--2">
+            <div class="field">
+              <label for="pd-name">Full name<span class="req" aria-hidden="true">*</span></label>
+              <input id="pd-name" name="name" class="input" type="text" autocomplete="name" required data-label="full name" aria-describedby="pd-name-err" />
+              <p class="field__error" id="pd-name-err"></p>
+            </div>
+            <div class="field">
+              <label for="pd-email">Email<span class="req" aria-hidden="true">*</span></label>
+              <input id="pd-email" name="email" class="input" type="email" autocomplete="email" inputmode="email" required data-label="email" aria-describedby="pd-email-err" />
+              <p class="field__error" id="pd-email-err"></p>
+            </div>
+          </div>
+          <div class="form-row form-row--3">
+            <div class="field">
+              <label for="pd-date">Preferred date<span class="req" aria-hidden="true">*</span></label>
+              <input id="pd-date" name="date" class="input" type="date" required data-label="preferred date" aria-describedby="pd-date-err" data-min-today />
+              <p class="field__error" id="pd-date-err"></p>
+            </div>
+            <div class="field">
+              <label for="pd-guests">Guests<span class="req" aria-hidden="true">*</span></label>
+              <input id="pd-guests" name="guests" class="input" type="number" min="8" max="180" inputmode="numeric" required data-label="number of guests" data-range-msg="Private events are for 8 to 180 guests." aria-describedby="pd-guests-err" />
+              <p class="field__error" id="pd-guests-err"></p>
+            </div>
+            <div class="field">
+              <label for="pd-room">Space</label>
+              <select id="pd-room" name="room" class="select">
+                <option value="">Not sure yet</option>
+                {rooms.map((r) => <option value={r.id}>{r.name}</option>)}
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <span class="label" id="pd-type-label">Occasion</span>
+            <div class="chips" role="group" aria-labelledby="pd-type-label">
+              {['Celebration', 'Corporate', 'Wedding', 'Holiday party', 'Other'].map((o, i) => (
+                <label>
+                  <input class="sr-only" type="radio" name="occasion" value={o} checked={i === 0} />
+                  <span class="chip">{o}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div class="field">
+            <label for="pd-msg">Tell us about your event</label>
+            <textarea id="pd-msg" name="message" class="textarea" rows="4" placeholder="Timing, menu preferences, dietary needs…"></textarea>
+          </div>
+          <div class="inquiry__submit">
+            <button class="btn" type="submit"><span class="btn__label">Send inquiry</span></button>
+            <p class="form-status" role="status" data-status></p>
+          </div>
+        </form>
+
+        <div class="inquiry__success" data-success hidden tabindex="-1">
+          <span class="inquiry__check"><Icon name="check" size={28} /></span>
+          <h3 class="h2">Thank you, <em data-success-name></em>.</h3>
+          <p class="lead">In a live version, our events team would now receive your request and reply within one business day.</p>
+          <div class="demo-note"><Icon name="info" /><p><strong>Demo:</strong> no data was sent or stored.</p></div>
+          <button class="link" type="button" data-again>Send another inquiry <Icon name="arrow-right" /></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section--tight faq" aria-labelledby="faq-title">
+    <div class="container faq__grid">
+      <h2 id="faq-title" class="h2" data-split>Questions, <em>answered</em></h2>
+      <div class="accordion">
+        {faqs.map((f) => (
+          <details>
+            <summary>{f.q}<span class="accordion__icon" aria-hidden="true"></span></summary>
+            <div class="accordion__body"><div>{f.a}</div></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .rooms__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-7);
+  }
+  .rooms__tabs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-top: 1px solid var(--line);
+    margin-bottom: var(--s-7);
+  }
+  @media (min-width: 900px) {
+    .rooms__tabs {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .room-tab {
+    position: relative;
+    display: grid;
+    gap: var(--s-1);
+    text-align: left;
+    padding: var(--s-5) var(--s-4) var(--s-5) 0;
+    min-height: 44px;
+    color: var(--text-subtle);
+    transition: color var(--d-base) var(--ease-out);
+  }
+  .room-tab::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 700ms var(--ease-out);
+  }
+  .room-tab:hover {
+    color: var(--text-muted);
+  }
+  .room-tab[aria-selected='true'] {
+    color: var(--text);
+  }
+  .room-tab[aria-selected='true']::before {
+    transform: scaleX(1);
+  }
+  .room-tab__n {
+    font-size: var(--fs-xs);
+    color: var(--accent);
+  }
+  .room-tab__name {
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+  }
+  .room-tab__cap {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.1em;
+  }
+  .room-panel {
+    display: grid;
+    gap: var(--s-7);
+  }
+  .room-panel:focus-visible {
+    outline-offset: 8px;
+  }
+  @media (min-width: 1000px) {
+    .room-panel {
+      grid-template-columns: 1.4fr 1fr;
+      gap: var(--s-8);
+      align-items: center;
+    }
+  }
+  .room-panel__media {
+    aspect-ratio: 16 / 11;
+  }
+  .room-panel__info {
+    display: grid;
+    gap: var(--s-5);
+    justify-items: start;
+  }
+  .room-panel__facts {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-block: 1px solid var(--line);
+    padding-block: var(--s-4);
+  }
+  .room-panel__facts dt {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+  .room-panel__facts dd {
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+    color: var(--accent-strong);
+  }
+  .room-panel__features {
+    display: grid;
+    gap: var(--s-2);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+  .room-panel__features li {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+  .room-panel__features :global(svg) {
+    color: var(--accent);
+  }
+
+  .packages {
+    background: var(--bg-deep);
+    border-block: 1px solid var(--line);
+  }
+  .packages__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+  .packages__grid {
+    display: grid;
+    gap: var(--s-5);
+  }
+  @media (min-width: 900px) {
+    .packages__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .package {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    padding: var(--s-7) var(--s-6);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    transition: border-color 500ms var(--ease-out), transform 500ms var(--ease-out);
+  }
+  .package:hover {
+    border-color: rgb(211 149 102 / 0.6);
+    transform: translateY(-4px);
+  }
+  .package--featured {
+    border-color: var(--accent);
+    background: radial-gradient(120% 80% at 50% 0%, rgb(192 122 75 / 0.16), transparent 70%), var(--surface);
+  }
+  .package__badge {
+    position: absolute;
+    top: -0.75rem;
+    left: var(--s-6);
+    padding: 0.2rem 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: var(--accent-fill);
+    color: var(--on-accent);
+  }
+  .package__name {
+    font-size: var(--fs-xl);
+  }
+  .package__price {
+    font-family: var(--f-display);
+    font-size: var(--fs-2xl);
+    line-height: 1;
+    color: var(--accent-strong);
+  }
+  .package__price span {
+    font-size: 0.5em;
+    vertical-align: top;
+  }
+  .package__price small {
+    font-family: var(--f-sans);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-left: var(--s-2);
+  }
+  .package ul {
+    border-top: 1px solid var(--line);
+    padding-top: var(--s-4);
+    display: grid;
+    gap: var(--s-2);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+
+  .inquiry {
+    scroll-margin-top: 4rem;
+  }
+  .inquiry__grid {
+    display: grid;
+    gap: var(--s-8);
+  }
+  @media (min-width: 1000px) {
+    .inquiry__grid {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: var(--s-9);
+      align-items: start;
+    }
+    .inquiry__intro {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .inquiry__intro {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .inquiry__contact {
+    display: grid;
+    gap: var(--s-3);
+    color: var(--text-muted);
+  }
+  .inquiry__contact li {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+  .inquiry__contact :global(svg) {
+    color: var(--accent);
+  }
+  .inquiry__contact a:hover {
+    color: var(--accent-strong);
+  }
+  .inquiry__submit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-5);
+  }
+  .inquiry__success {
+    display: grid;
+    gap: var(--s-5);
+    justify-items: start;
+    padding: var(--s-7) 0;
+  }
+  .inquiry__success:focus {
+    outline: none;
+  }
+  .inquiry__success :global(em) {
+    font-style: italic;
+    color: var(--accent-strong);
+  }
+  .inquiry__check {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--accent-fill);
+    color: var(--on-accent);
+  }
+  .faq__grid {
+    display: grid;
+    gap: var(--s-7);
+  }
+  @media (min-width: 900px) {
+    .faq__grid {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: var(--s-9);
+    }
+  }
+</style>
+
+<script>
+  import { gsap, hasMotion, onReady, scrollToEl } from '../scripts/main';
+  import { enhanceForm, validateForm, setLoading, fakeRequest } from '../scripts/forms';
+
+  /* ---------- Tabs (WAI-ARIA pattern, automatic activation) ---------- */
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>('[data-panel]'));
+
+  const activate = (tab: HTMLButtonElement, focus = true) => {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+    });
+    const panel = document.getElementById(tab.getAttribute('aria-controls')!)!;
+    panels.forEach((p) => (p.hidden = p !== panel));
+    if (focus) tab.focus();
+    if (hasMotion()) {
+      const img = panel.querySelector('img');
+      const info = panel.querySelectorAll('.room-panel__info > *');
+      gsap.fromTo(panel.querySelector('.media'), { clipPath: 'inset(0 0 0 100%)' }, { clipPath: 'inset(0 0 0 0%)', duration: 1.1, ease: 'expo.inOut', overwrite: true });
+      gsap.fromTo(img, { scale: 1.2 }, { scale: 1, duration: 1.6, ease: 'expo.out', overwrite: true });
+      gsap.fromTo(info, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out', stagger: 0.05, delay: 0.15, overwrite: true });
+    }
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => activate(tab, false));
+    tab.addEventListener('keydown', (e) => {
+      const map: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
+      if (e.key in map) {
+        e.preventDefault();
+        activate(tabs[(map[e.key] + tabs.length) % tabs.length]);
+      }
+    });
+  });
+
+  /* ---------- Inquiry form ---------- */
+  const form = document.querySelector<HTMLFormElement>('[data-inquiry]')!;
+  const success = document.querySelector<HTMLElement>('[data-success]')!;
+  const status = form.querySelector<HTMLElement>('[data-status]')!;
+  const roomSelect = form.querySelector<HTMLSelectElement>('#pd-room')!;
+  const date = form.querySelector<HTMLInputElement>('[data-min-today]');
+  if (date) date.min = new Date().toISOString().slice(0, 10);
+  if (date) date.dataset.rangeMsg = 'Please choose a date from today onwards.';
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-room-pick]').forEach((a) =>
+    a.addEventListener('click', () => {
+      roomSelect.value = a.dataset.roomPick!;
+    }),
+  );
+
+  enhanceForm(form);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.textContent = '';
+    if (!validateForm(form)) {
+      status.className = 'form-status is-error';
+      status.textContent = 'Please correct the highlighted fields.';
+      return;
+    }
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    setLoading(btn, true);
+    await fakeRequest(1300);
+    setLoading(btn, false);
+    const name = (new FormData(form).get('name') as string).split(' ')[0];
+    success.querySelector('[data-success-name]')!.textContent = name;
+    form.hidden = true;
+    success.hidden = false;
+    success.focus();
+    if (hasMotion()) gsap.from(success.children, { opacity: 0, y: 20, duration: 0.9, ease: 'expo.out', stagger: 0.07 });
+  });
+  success.querySelector('[data-again]')?.addEventListener('click', () => {
+    form.reset();
+    form.hidden = false;
+    success.hidden = true;
+    form.querySelector<HTMLInputElement>('input')?.focus();
+  });
+
+  onReady(() => {
+    if (location.hash === '#inquire') scrollToEl(document.getElementById('inquire')!, -80);
+  });
+</script>

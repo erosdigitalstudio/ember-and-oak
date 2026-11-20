@@ -1,0 +1,514 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import { url } from '../data/site';
+
+import heroImg from '../assets/img/chef-flame.jpg';
+import steakFork from '../assets/img/steak-fork.jpg';
+import rawFilets from '../assets/img/raw-filets.jpg';
+import waterfront from '../assets/img/waterfront.jpg';
+import chefPlating from '../assets/img/chef-plating.jpg';
+
+const pillars = [
+  {
+    n: 'I',
+    icon: 'flame',
+    title: 'Fire',
+    lead: 'No gas, no shortcuts.',
+    text: 'Our hearth burns Oregon white oak for steady heat and Washington cherry for a sweet, gentle smoke. The grate rises and falls on a hand-cranked wheel, so every cut meets exactly the heat it needs: a ferocious sear, then patience over glowing coals.',
+    img: steakFork,
+    alt: 'A sliced, deeply seared steak with a pink interior',
+  },
+  {
+    n: 'II',
+    icon: 'hourglass',
+    title: 'Time',
+    lead: 'Flavor cannot be rushed.',
+    text: 'In our glass-walled aging room, whole primals rest on Himalayan salt at 34°F with constant airflow. Over weeks, moisture leaves and natural enzymes go to work: the beef grows tender, concentrated and complex, with notes of toasted nuts, mushroom and aged cheese.',
+    img: rawFilets,
+    alt: 'Thick raw filet medallions on butcher paper with coarse salt',
+  },
+  {
+    n: 'III',
+    icon: 'mountain',
+    title: 'Place',
+    lead: 'Everything within a day’s drive.',
+    text: 'Beef from family ranches in the Columbia Basin and eastern Oregon. Oysters from Hood Canal, crab from Westport, chanterelles from the Olympic foothills, cherries from Wenatchee. When something comes from farther away, like our A5 from Miyazaki, it is because nothing nearby can take its place.',
+    img: waterfront,
+    alt: 'A waterfront dining terrace overlooking calm water and mountains at dusk',
+  },
+  {
+    n: 'IV',
+    icon: 'feather',
+    title: 'Restraint',
+    lead: 'Knowing when to stop.',
+    text: 'Salt, fire and time do most of the work. Our sauces stay on the side, our plates stay uncluttered and our garnishes earn their place. Luxury, to us, is an ingredient so good it needs nothing more.',
+    img: chefPlating,
+    alt: 'A chef adding the final garnish to a plated dish',
+  },
+] as const;
+
+const sources = [
+  { place: 'Hood Canal', what: 'Oysters', miles: 85 },
+  { place: 'Westport', what: 'Dungeness crab', miles: 112 },
+  { place: 'Olympic Peninsula', what: 'Wild mushrooms', miles: 96 },
+  { place: 'Wenatchee', what: 'Cherries & cherry wood', miles: 148 },
+  { place: 'Columbia Basin', what: 'Prime & Wagyu beef', miles: 186 },
+  { place: 'Walla Walla', what: 'Onions & Cabernet', miles: 262 },
+];
+---
+<Base
+  title="Our Philosophy"
+  description="Fire, time, place and restraint: the culinary philosophy behind Ember & Oak, Seattle's Pacific Northwest steakhouse. Explore how dry-aging transforms beef."
+>
+  <PageHero eyebrow="Culinary Philosophy" image={heroImg} alt="A chef tossing a pan engulfed in flames in a busy kitchen" position="30% center">
+    <Fragment slot="title">Fire, time <em>&amp; place</em></Fragment>
+    <Fragment slot="lead">
+      <p>Four ideas shape every plate that leaves our kitchen. None of them are new. All of them take discipline.</p>
+    </Fragment>
+  </PageHero>
+
+  <section class="section manifesto">
+    <div class="container">
+      <p class="manifesto__text" data-scrub-text>
+        A great steak is not invented. It is raised with care, aged with patience, and cooked by someone who knows exactly when to step away from the fire.
+      </p>
+      <p class="manifesto__sign" data-reveal="fade">Adrian Holt <span>· Executive Chef</span></p>
+    </div>
+  </section>
+
+  {pillars.map((p, i) => (
+    <section class:list={['pillar', i % 2 === 1 && 'pillar--flip']} aria-labelledby={`pillar-${i}`}>
+      <div class="container pillar__grid">
+        <div class="pillar__media">
+          <Photo src={p.img} alt={p.alt} ratio="4 / 5" parallax sizes="(min-width: 900px) 45vw, 100vw" />
+        </div>
+        <div class="pillar__text">
+          <div class="pillar__num" aria-hidden="true">{p.n}</div>
+          <p class="eyebrow eyebrow--plain"><Icon name={p.icon} size={18} /> {p.lead}</p>
+          <h2 id={`pillar-${i}`} class="pillar__title" data-split>{p.title}</h2>
+          <p class="lead" data-reveal="up">{p.text}</p>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- Interactive dry-aging explorer -->
+  <section class="section aging" aria-labelledby="aging-title">
+    <div class="container aging__grid">
+      <div class="aging__intro">
+        <p class="eyebrow">Inside the aging room</p>
+        <h2 id="aging-title" class="h2" data-split>What <em>time</em> tastes like</h2>
+        <p class="lead" data-reveal="up">Drag the slider to follow a ribeye through its weeks in our aging room.</p>
+      </div>
+
+      <div class="aging__panel" data-aging>
+        <div class="aging__readout">
+          <p class="aging__days"><span data-aging-days class="tabular">45</span><small>days</small></p>
+          <div>
+            <p class="aging__stage" data-aging-stage>Deep &amp; savory</p>
+            <p class="aging__notes" data-aging-notes>Roasted mushroom, brown butter and a whisper of aged Parmigiano. Our signature ribeye lives here.</p>
+          </div>
+        </div>
+
+        <div class="field aging__slider">
+          <label for="aging-range">Days of dry-aging</label>
+          <input
+            id="aging-range"
+            type="range"
+            min="14"
+            max="60"
+            step="1"
+            value="45"
+            aria-valuetext="45 days: deep and savory"
+            data-aging-range
+          />
+          <div class="aging__ticks" aria-hidden="true"><span>14</span><span>21</span><span>30</span><span>45</span><span>60</span></div>
+        </div>
+
+        <dl class="aging__meters">
+          <div><dt>Tenderness</dt><dd><span class="meter"><span data-meter="tender"></span></span></dd></div>
+          <div><dt>Depth of flavor</dt><dd><span class="meter"><span data-meter="depth"></span></span></dd></div>
+          <div><dt>Weight lost to time</dt><dd><span class="meter"><span data-meter="loss"></span></span> <span class="tabular subtle" data-loss-pct>18%</span></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sourcing -->
+  <section class="section sources" aria-labelledby="sources-title">
+    <div class="container">
+      <div class="sources__head">
+        <p class="eyebrow">Our neighbors</p>
+        <h2 id="sources-title" class="h2" data-split>A day’s drive from <em>the hearth</em></h2>
+      </div>
+      <ol class="sources__list" role="list" data-reveal-stagger="0.06">
+        {sources.map((s) => (
+          <li>
+            <span class="sources__place">{s.place}</span>
+            <span class="sources__what">{s.what}</span>
+            <span class="sources__miles tabular"><span data-count={s.miles}>{s.miles}</span> mi</span>
+          </li>
+        ))}
+      </ol>
+      <div class="sources__cta" data-reveal="up">
+        <a class="btn" href={url('menu/')} data-magnetic><span class="btn__label">Taste it on the menu</span><Icon name="arrow-right" /></a>
+        <a class="link" href={url('our-story/')}>Read our story <Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .manifesto__text {
+    font-family: var(--f-display);
+    font-size: clamp(2rem, 1.2rem + 3.2vw, 4.25rem);
+    line-height: 1.1;
+    max-width: 22ch;
+  }
+  .manifesto__sign {
+    margin-top: var(--s-7);
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: var(--fs-xl);
+    color: var(--accent-strong);
+  }
+  .manifesto__sign span {
+    font-family: var(--f-sans);
+    font-style: normal;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  .pillar {
+    padding-block: calc(var(--section) * 0.6);
+  }
+  .pillar__grid {
+    display: grid;
+    gap: var(--s-7);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .pillar__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-9);
+    }
+    .pillar--flip .pillar__media {
+      order: 2;
+    }
+  }
+  .pillar__text {
+    position: relative;
+    display: grid;
+    gap: var(--s-5);
+  }
+  .pillar__num {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: clamp(6rem, 3rem + 10vw, 14rem);
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(211 149 102 / 0.45);
+  }
+  .pillar__title {
+    font-size: var(--fs-3xl);
+  }
+  .pillar .eyebrow :global(svg) {
+    flex: none;
+  }
+
+  /* Aging explorer */
+  .aging {
+    background: var(--bg-deep);
+    border-block: 1px solid var(--line);
+    margin-top: var(--section);
+  }
+  .aging__grid {
+    display: grid;
+    gap: var(--s-8);
+  }
+  @media (min-width: 1000px) {
+    .aging__grid {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: var(--s-9);
+      align-items: center;
+    }
+  }
+  .aging__intro {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .aging__panel {
+    display: grid;
+    gap: var(--s-7);
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgb(192 122 75 / 0.12), transparent 60%),
+      var(--surface);
+  }
+  .aging__readout {
+    display: grid;
+    gap: var(--s-5);
+    align-items: center;
+    min-height: 11rem;
+  }
+  @media (min-width: 640px) {
+    .aging__readout {
+      grid-template-columns: auto 1fr;
+      gap: var(--s-7);
+    }
+  }
+  .aging__days {
+    font-family: var(--f-display);
+    font-size: clamp(5rem, 3rem + 7vw, 9rem);
+    line-height: 0.85;
+    color: var(--accent-strong);
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+  }
+  .aging__days span {
+    display: inline-block;
+    min-width: 2ch;
+  }
+  .aging__days small {
+    font-family: var(--f-sans);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+  .aging__stage {
+    font-family: var(--f-display);
+    font-size: var(--fs-xl);
+    font-style: italic;
+  }
+  .aging__notes {
+    margin-top: var(--s-2);
+    color: var(--text-muted);
+  }
+
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 44px;
+    background: transparent;
+    cursor: pointer;
+    --pct: 67%;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent) var(--pct), var(--line-strong) var(--pct));
+  }
+  input[type='range']::-moz-range-track {
+    height: 2px;
+    background: var(--line-strong);
+  }
+  input[type='range']::-moz-range-progress {
+    height: 2px;
+    background: var(--accent);
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    margin-top: -12px;
+    border-radius: 50%;
+    background: var(--ivory-50);
+    border: 6px solid var(--copper-500);
+    box-shadow: 0 0 0 6px rgb(192 122 75 / 0.2);
+    transition: transform var(--d-fast) var(--ease-out);
+  }
+  input[type='range']:active::-webkit-slider-thumb {
+    transform: scale(1.15);
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--ivory-50);
+    border: 6px solid var(--copper-500);
+    box-shadow: 0 0 0 6px rgb(192 122 75 / 0.2);
+  }
+  input[type='range']:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 6px;
+  }
+  .aging__ticks {
+    position: relative;
+    height: 1.25rem;
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .aging__ticks span {
+    position: absolute;
+    transform: translateX(-50%);
+  }
+  .aging__ticks span:nth-child(1) { left: 0; transform: none; }
+  .aging__ticks span:nth-child(2) { left: 15.2%; }
+  .aging__ticks span:nth-child(3) { left: 34.8%; }
+  .aging__ticks span:nth-child(4) { left: 67.4%; }
+  .aging__ticks span:nth-child(5) { left: auto; right: 0; transform: none; }
+
+  .aging__meters {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .aging__meters div {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    align-items: center;
+    gap: var(--s-4);
+  }
+  .aging__meters dt {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .aging__meters dd {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+  .meter {
+    position: relative;
+    flex: 1;
+    height: 6px;
+    background: var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .meter span {
+    position: absolute;
+    inset: 0;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--copper-500), var(--ember-400));
+    transform-origin: left;
+    transform: scaleX(0.5);
+    transition: transform 600ms var(--ease-out);
+  }
+  @media (max-width: 520px) {
+    .aging__meters div {
+      grid-template-columns: 1fr;
+      gap: var(--s-2);
+    }
+  }
+
+  /* Sources */
+  .sources__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+  .sources__list {
+    border-top: 1px solid var(--line);
+  }
+  .sources__list li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--s-1) var(--s-5);
+    align-items: baseline;
+    padding-block: var(--s-5);
+    border-bottom: 1px solid var(--line);
+    transition: background-color var(--d-base) var(--ease-out), padding var(--d-base) var(--ease-out);
+  }
+  .sources__list li:hover {
+    background: rgb(244 237 227 / 0.03);
+    padding-inline: var(--s-4);
+  }
+  @media (min-width: 760px) {
+    .sources__list li {
+      grid-template-columns: 1.2fr 1fr auto;
+    }
+  }
+  .sources__place {
+    font-family: var(--f-display);
+    font-size: var(--fs-xl);
+  }
+  .sources__what {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    grid-row: 2;
+  }
+  @media (min-width: 760px) {
+    .sources__what {
+      grid-row: auto;
+    }
+  }
+  .sources__miles {
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+    color: var(--accent-strong);
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    align-self: center;
+  }
+  @media (min-width: 760px) {
+    .sources__miles {
+      grid-row: auto;
+      grid-column: auto;
+    }
+  }
+  .sources__cta {
+    margin-top: var(--s-8);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-6);
+  }
+</style>
+
+<script>
+  import { gsap, hasMotion } from '../scripts/main';
+
+  const stages = [
+    { max: 20, name: 'Fresh & mineral', notes: 'Clean, bright beef flavor with a firm bite. The enzymes have only just begun their work.' },
+    { max: 34, name: 'Buttery & tender', notes: 'Noticeably softer, with hints of brown butter and toasted hazelnut. A gentle introduction to dry-aging.' },
+    { max: 49, name: 'Deep & savory', notes: 'Roasted mushroom, brown butter and a whisper of aged Parmigiano. Our signature ribeye lives here.' },
+    { max: 60, name: 'Bold & funky', notes: 'Intensely concentrated, with blue cheese, truffle and cured-ham character. Reserved for the Oak Tomahawk.' },
+  ];
+
+  const range = document.querySelector<HTMLInputElement>('[data-aging-range]');
+  const daysEl = document.querySelector('[data-aging-days]');
+  const stageEl = document.querySelector('[data-aging-stage]');
+  const notesEl = document.querySelector('[data-aging-notes]');
+  const lossEl = document.querySelector('[data-loss-pct]');
+  const meters = {
+    tender: document.querySelector<HTMLElement>('[data-meter="tender"]'),
+    depth: document.querySelector<HTMLElement>('[data-meter="depth"]'),
+    loss: document.querySelector<HTMLElement>('[data-meter="loss"]'),
+  };
+  let lastStage = '';
+
+  const update = () => {
+    if (!range) return;
+    const d = Number(range.value);
+    const t = (d - 14) / 46; // 0..1
+    const stage = stages.find((s) => d <= s.max)!;
+    range.style.setProperty('--pct', `${t * 100}%`);
+    if (daysEl) daysEl.textContent = String(d);
+    const loss = Math.round(8 + t * 22);
+    if (lossEl) lossEl.textContent = `${loss}%`;
+    meters.tender?.style.setProperty('transform', `scaleX(${0.45 + t * 0.5})`);
+    meters.depth?.style.setProperty('transform', `scaleX(${0.25 + t * 0.75})`);
+    meters.loss?.style.setProperty('transform', `scaleX(${loss / 35})`);
+    range.setAttribute('aria-valuetext', `${d} days: ${stage.name.toLowerCase()}`);
+
+    if (stage.name !== lastStage) {
+      lastStage = stage.name;
+      if (stageEl) stageEl.textContent = stage.name;
+      if (notesEl) notesEl.textContent = stage.notes;
+      if (hasMotion()) gsap.fromTo([stageEl, notesEl], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', stagger: 0.06, overwrite: true });
+    }
+  };
+  range?.addEventListener('input', update);
+  update();
+</script>

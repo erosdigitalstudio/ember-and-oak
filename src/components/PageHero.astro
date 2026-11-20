@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  eyebrow: string;
+  image: ImageMetadata;
+  alt?: string;
+  short?: boolean;
+  position?: string;
+}
+const { eyebrow, image, alt = '', short = false, position = 'center' } = Astro.props;
+---
+<section class:list={['page-hero', short && 'page-hero--short']}>
+  <div class="page-hero__bg">
+    <Image
+      src={image}
+      alt={alt}
+      widths={[768, 1280, 1920]}
+      sizes="100vw"
+      format="webp"
+      quality={76}
+      loading="eager"
+      fetchpriority="high"
+      style={`object-position:${position}`}
+    />
+  </div>
+  <div class="container">
+    <p class="eyebrow" data-reveal="fade" data-hero>{eyebrow}</p>
+    <h1 class="page-hero__title" style="margin-top:1.5rem" data-split="hero"><slot name="title" /></h1>
+    <div class="page-hero__meta">
+      <div class="lead" data-reveal="up" data-hero data-delay="0.35"><slot name="lead" /></div>
+      <div data-reveal="fade" data-hero data-delay="0.6">
+        <slot name="aside">
+          <span class="scroll-cue"><span class="scroll-cue__line" aria-hidden="true"></span>Scroll</span>
+        </slot>
+      </div>
+    </div>
+  </div>
+</section>

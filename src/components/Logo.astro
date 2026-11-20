@@ -1,0 +1,15 @@
+---
+/**
+ * Ember & Oak logotype — typographic wordmark.
+ * Tracked roman capitals, framed by a swash italic ampersand in copper.
+ */
+interface Props {
+  size?: 'sm' | 'xl';
+  as?: 'span' | 'div';
+  class?: string;
+}
+const { size = 'sm', as: Tag = 'span', class: cls } = Astro.props;
+---
+<Tag class:list={['logo', size === 'xl' && 'logo--xl', cls]}>
+  <span class="logo__word">Ember</span><span class="logo__amp" aria-hidden="true">&amp;</span><span class="sr-only"> and </span><span class="logo__word">Oak</span>
+</Tag>

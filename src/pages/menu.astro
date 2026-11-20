@@ -1,0 +1,667 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import { menu, tagLabels, tasting, doneness } from '../data/menu';
+import { url } from '../data/site';
+
+import heroImg from '../assets/img/steak-cast-iron.jpg';
+import rawFilets from '../assets/img/raw-filets.jpg';
+import steakDark from '../assets/img/steak-dark.jpg';
+import chefPlating from '../assets/img/chef-plating.jpg';
+
+const total = menu.reduce((n, s) => n + s.dishes.length, 0);
+const interludes: Record<string, { img: ImageMetadata; alt: string; caption: string }> = {
+  starters: { img: rawFilets, alt: 'Raw filet medallions with salt and peppercorns on butcher paper', caption: 'Selected each morning in the aging room' },
+  wagyu: { img: steakDark, alt: 'Seared Wagyu slices resting over dark leaves', caption: 'A5 Miyazaki · seared on binchotan' },
+};
+
+const menuSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Menu',
+  name: 'Ember & Oak Dinner Menu',
+  hasMenuSection: menu.map((s) => ({
+    '@type': 'MenuSection',
+    name: s.title,
+    hasMenuItem: s.dishes.map((d) => ({ '@type': 'MenuItem', name: d.name, description: d.desc })),
+  })),
+};
+---
+<Base
+  title="Menu"
+  description="The Ember & Oak dinner menu: dry-aged USDA Prime, A5 Miyazaki Wagyu, Hood Canal oysters, Dungeness crab and Pacific Northwest seafood, cooked over oak and cherry wood."
+  schema={menuSchema}
+>
+  <PageHero eyebrow="Dinner Menu · Autumn" image={heroImg} alt="Sliced steak and roasted potatoes on a cast-iron platter" position="center 60%">
+    <Fragment slot="title">The <em>Menu</em></Fragment>
+    <Fragment slot="lead">
+      <p>Seven chapters, one fire. Our menu follows the seasons of the Pacific Northwest and the slow clock of the aging room.</p>
+    </Fragment>
+  </PageHero>
+
+  <!-- Sticky menu navigation + filters -->
+  <div class="menu-bar" data-menu-bar>
+    <div class="container menu-bar__inner">
+      <nav class="menu-cats" aria-label="Menu sections">
+        <ul role="list">
+          {menu.map((s) => (
+            <li><a href={`#${s.id}`} data-cat-link={s.id}>{s.title}</a></li>
+          ))}
+          <li><a href="#tasting" data-cat-link="tasting">Tasting</a></li>
+        </ul>
+      </nav>
+      <div class="menu-filters" role="group" aria-label="Filter dishes">
+        <button class="chip" type="button" aria-pressed="false" data-filter="gf">Gluten-free</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="v">Vegetarian</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="no-shellfish">No shellfish</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="signature">Signatures</button>
+      </div>
+    </div>
+  </div>
+  <p class="sr-only" aria-live="polite" data-filter-status>Showing all {total} dishes.</p>
+
+  <div class="container menu-body">
+    {menu.map((section) => (
+      <>
+        <section class="menu-section" id={section.id} data-menu-section aria-labelledby={`${section.id}-title`}>
+          <header class="menu-section__head">
+            <span class="menu-section__kicker" aria-hidden="true">{section.kicker}</span>
+            <h2 id={`${section.id}-title`} class="h1" data-split>{section.title}</h2>
+            <p class="lead" data-reveal="up">{section.intro}</p>
+          </header>
+          <ul class="dishes" role="list">
+            {section.dishes.map((d) => (
+              <li
+                class="dish"
+                data-dish
+                data-tags={(d.tags ?? []).join(' ')}
+                data-reveal="up"
+              >
+                <div class="dish__top">
+                  <h3 class="dish__name">{d.name}</h3>
+                  <span class="dish__leader" aria-hidden="true"></span>
+                  <span class="dish__price tabular">
+                    {/^\d/.test(d.price) ? <><span class="sr-only">Price: $</span><span aria-hidden="true">$</span>{d.price}</> : d.price === 'MP' ? <abbr title="Market price">MP</abbr> : d.price}
+                  </span>
+                </div>
+                <p class="dish__desc">{d.desc}</p>
+                {d.note && <p class="dish__note">{d.note}</p>}
+                {d.tags && d.tags.length > 0 && (
+                  <ul class="dish__tags" role="list" aria-label="Dietary and serving notes">
+                    {d.tags.map((t) => <li class:list={['tag', `tag--${t}`]}>{tagLabels[t]}</li>)}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p class="menu-empty" data-empty hidden>No dishes in this chapter match your filters.</p>
+        </section>
+        {interludes[section.id] && (
+          <div class="menu-interlude">
+            <Photo src={interludes[section.id].img} alt={interludes[section.id].alt} ratio="21 / 9" parallax caption={interludes[section.id].caption} sizes="(min-width: 1400px) 1300px, 100vw" />
+          </div>
+        )}
+      </>
+    ))}
+  </div>
+
+  <!-- Doneness guide -->
+  <section class="section doneness" aria-labelledby="doneness-title">
+    <div class="container doneness__grid">
+      <div class="doneness__text">
+        <p class="eyebrow">The Butcher’s Guide</p>
+        <h2 id="doneness-title" class="h2" data-split>How would you <em>like it?</em></h2>
+        <p class="lead" data-reveal="up">Every steak is cooked to an internal temperature, then rested. Choose a temperature to see what to expect.</p>
+
+        <div class="doneness__choices chips" role="radiogroup" aria-label="Doneness" data-doneness>
+          {doneness.map((d, i) => (
+            <button
+              type="button"
+              class="chip"
+              role="radio"
+              aria-checked={d.id === 'medium-rare' ? 'true' : 'false'}
+              tabindex={d.id === 'medium-rare' ? 0 : -1}
+              data-id={d.id}
+              data-label={d.label}
+              data-temp={d.temp}
+              data-c={d.c}
+              data-desc={d.desc}
+              data-index={i}
+            >{d.label}</button>
+          ))}
+        </div>
+
+        <div class="doneness__readout" aria-live="polite">
+          <p class="doneness__temp"><span data-d-temp>130°F</span> <small data-d-c>54°C</small></p>
+          <p class="doneness__desc" data-d-desc>{doneness[2].desc}</p>
+        </div>
+      </div>
+
+      <div class="doneness__visual" data-d-visual style="--core:#c23b3f;--mid:#9e3b31" aria-hidden="true">
+        <svg viewBox="0 0 400 260" class="steak-svg">
+          <defs>
+            <radialGradient id="core-g" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" style="stop-color:var(--core)" />
+              <stop offset="70%" style="stop-color:var(--core)" />
+              <stop offset="100%" style="stop-color:var(--mid)" />
+            </radialGradient>
+            <filter id="char" x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n" />
+              <feColorMatrix in="n" values="0 0 0 0 0.1  0 0 0 0 0.06  0 0 0 0 0.04  0 0 0 0.7 0" result="c" />
+              <feComposite in="c" in2="SourceGraphic" operator="in" />
+              <feBlend in2="SourceGraphic" mode="multiply" />
+            </filter>
+          </defs>
+          <path d="M40 120c0-58 70-96 168-96s162 36 162 98-60 112-168 112S40 178 40 120z" fill="#3a1f14" filter="url(#char)" />
+          <path d="M54 121c0-49 64-82 154-82s148 31 148 84-54 97-152 97S54 170 54 121z" fill="var(--mid)" class="steak-svg__mid" />
+          <path d="M74 122c0-40 56-66 134-66s128 26 128 70-48 78-132 78S74 162 74 122z" fill="url(#core-g)" class="steak-svg__core" />
+          <path d="M300 70c18 10 30 26 34 46" stroke="#f3e2c9" stroke-opacity=".55" stroke-width="10" stroke-linecap="round" fill="none" />
+          <path d="M120 150c30 12 70 14 110 4" stroke="#f3e2c9" stroke-opacity=".18" stroke-width="3" fill="none" />
+          <path d="M140 92c22-8 50-10 76-4" stroke="#f3e2c9" stroke-opacity=".16" stroke-width="2.5" fill="none" />
+        </svg>
+        <div class="doneness__scale">
+          {doneness.map((d) => <span>{d.temp}</span>)}
+        </div>
+        <div class="doneness__track"><span data-d-bar></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tasting menu -->
+  <section class="section tasting" id="tasting" data-menu-section aria-labelledby="tasting-title">
+    <div class="container tasting__grid">
+      <div class="tasting__media">
+        <Photo src={chefPlating} alt="A chef adding the final garnish to a plated dish" ratio="3 / 4" parallax sizes="(min-width: 900px) 40vw, 100vw" />
+      </div>
+      <div class="tasting__card">
+        <p class="eyebrow">Chef’s Counter · Tuesday to Thursday</p>
+        <h2 id="tasting-title" class="h1" data-split>{tasting.name}</h2>
+        <p class="tasting__price tabular" data-reveal="up">${tasting.price} <small>per guest</small> · ${tasting.pairing} <small>wine pairing</small></p>
+        <ol class="tasting__courses" role="list" data-reveal-stagger>
+          {tasting.courses.map((c, i) => (
+            <li><span class="tabular">{String(i + 1).padStart(2, '0')}</span>{c}</li>
+          ))}
+        </ol>
+        <a class="btn" href={url('reservations/')} data-magnetic><span class="btn__label">Reserve the counter</span><Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container menu-footnote">
+    <p class="subtle">
+      Menu shown for demonstration and changes with the seasons. Please tell your server about any allergies; our kitchen handles shellfish, nuts, dairy and gluten. Consuming raw or undercooked meats, poultry, seafood, shellfish or eggs may increase your risk of foodborne illness.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .menu-bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgb(11 9 8 / 0.86);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-block: 1px solid var(--line);
+    transition: top 600ms var(--ease-out);
+  }
+  :global(.site-header:not(.is-hidden) ~ main) .menu-bar {
+    top: var(--header-h);
+  }
+  .menu-bar__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3) var(--s-6);
+    padding-block: var(--s-3);
+  }
+  .menu-cats {
+    overflow-x: auto;
+    scrollbar-width: none;
+    max-width: 100%;
+    mask-image: linear-gradient(90deg, #000 85%, transparent);
+  }
+  .menu-cats::-webkit-scrollbar {
+    display: none;
+  }
+  .menu-cats ul {
+    display: flex;
+    gap: var(--s-1);
+    padding-right: var(--s-6);
+  }
+  .menu-cats a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--s-3);
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+    color: var(--text-subtle);
+    border-bottom: 1px solid transparent;
+    transition:
+      color var(--d-base) var(--ease-out),
+      border-color var(--d-base) var(--ease-out);
+  }
+  .menu-cats a:hover,
+  .menu-cats a.is-active {
+    color: var(--text);
+  }
+  .menu-cats a.is-active {
+    border-bottom-color: var(--accent);
+  }
+  .menu-filters {
+    display: flex;
+    gap: var(--s-2);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-block: 2px;
+  }
+  .menu-filters .chip {
+    min-height: 2.5rem;
+    padding: 0 var(--s-4);
+    font-size: var(--fs-xs);
+    white-space: nowrap;
+  }
+  .menu-bar__inner > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  @media (max-width: 720px) {
+    .menu-bar__inner {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .menu-filters {
+      flex-wrap: wrap;
+    }
+  }
+
+  .menu-body {
+    padding-bottom: var(--s-8);
+  }
+  .menu-section {
+    padding-top: var(--section);
+    scroll-margin-top: 9rem;
+    display: grid;
+    gap: var(--s-7);
+  }
+  @media (min-width: 1000px) {
+    .menu-section {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--s-9);
+      align-items: start;
+    }
+    .menu-section__head {
+      position: sticky;
+      top: 12rem;
+    }
+  }
+  .menu-section__head {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .menu-section__kicker {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: var(--fs-xl);
+    color: var(--accent);
+  }
+  .dishes {
+    display: grid;
+  }
+  .dish {
+    padding-block: var(--s-6);
+    border-bottom: 1px solid var(--line);
+    transition: opacity 400ms var(--ease-out);
+  }
+  .dish:first-child {
+    border-top: 1px solid var(--line);
+  }
+  .dish.is-filtered {
+    display: none;
+  }
+  .dish__top {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+  }
+  .dish__name {
+    font-size: var(--fs-lg);
+    font-weight: 500;
+    line-height: 1.2;
+    transition: color var(--d-base) var(--ease-out);
+  }
+  .dish:hover .dish__name {
+    color: var(--accent-strong);
+  }
+  .dish__leader {
+    flex: 1;
+    min-width: 1.5rem;
+    border-bottom: 1px dotted var(--line-strong);
+    transform: translateY(-0.3em);
+  }
+  .dish__price {
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+    color: var(--accent-strong);
+    white-space: nowrap;
+  }
+  .dish__price abbr {
+    text-decoration: none;
+  }
+  .dish__desc {
+    margin-top: var(--s-2);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    max-width: 52ch;
+  }
+  .dish__note {
+    margin-top: var(--s-1);
+    font-size: var(--fs-sm);
+    font-style: italic;
+    font-family: var(--f-display);
+    font-size: var(--fs-md);
+    color: var(--text-subtle);
+  }
+  .dish__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-top: var(--s-3);
+  }
+  .tag {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    color: var(--text-subtle);
+  }
+  .tag--signature {
+    border-color: rgb(211 149 102 / 0.6);
+    color: var(--accent-strong);
+  }
+  .menu-empty {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: var(--fs-lg);
+    color: var(--text-subtle);
+    grid-column: 2;
+  }
+  .menu-interlude {
+    padding-top: var(--section);
+  }
+
+  /* Doneness */
+  .doneness {
+    background: var(--bg-deep);
+    border-block: 1px solid var(--line);
+    margin-top: var(--section);
+  }
+  .doneness__grid {
+    display: grid;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .doneness__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-9);
+    }
+  }
+  .doneness__text {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .doneness__choices {
+    margin-top: var(--s-3);
+  }
+  .doneness__readout {
+    min-height: 8rem;
+  }
+  .doneness__temp {
+    font-family: var(--f-display);
+    font-size: var(--fs-2xl);
+    line-height: 1;
+    color: var(--accent-strong);
+    font-variant-numeric: tabular-nums;
+  }
+  .doneness__temp small {
+    font-size: 0.45em;
+    color: var(--text-subtle);
+  }
+  .doneness__desc {
+    margin-top: var(--s-3);
+    color: var(--text-muted);
+    max-width: 40ch;
+  }
+  .doneness__visual {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .steak-svg {
+    width: 100%;
+    filter: drop-shadow(0 30px 60px rgb(0 0 0 / 0.6));
+  }
+  .steak-svg__mid,
+  .steak-svg__core {
+    transition: fill 800ms var(--ease-out);
+  }
+  .steak-svg stop {
+    transition: stop-color 800ms var(--ease-out);
+  }
+  .doneness__scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .doneness__track {
+    position: relative;
+    height: 2px;
+    background: linear-gradient(90deg, #6e1424, #a3202f, #c23b3f, #d4706a, #b98274, #8c6a5c);
+    border-radius: 2px;
+  }
+  .doneness__track span {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border-radius: 50%;
+    background: var(--ivory-50);
+    box-shadow: 0 0 0 4px rgb(244 237 227 / 0.15);
+    transition: left 700ms var(--ease-out);
+  }
+
+  /* Tasting */
+  .tasting__grid {
+    display: grid;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .tasting__grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: var(--s-9);
+    }
+  }
+  .tasting {
+    scroll-margin-top: 6rem;
+  }
+  .tasting__card {
+    display: grid;
+    gap: var(--s-5);
+    justify-items: start;
+  }
+  .tasting__price {
+    font-family: var(--f-display);
+    font-size: var(--fs-xl);
+    color: var(--accent-strong);
+  }
+  .tasting__price small {
+    font-family: var(--f-sans);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+  .tasting__courses {
+    width: 100%;
+    margin-block: var(--s-3) var(--s-5);
+    border-top: 1px solid var(--line);
+  }
+  .tasting__courses li {
+    display: flex;
+    gap: var(--s-5);
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+  }
+  .tasting__courses span {
+    font-family: var(--f-sans);
+    font-size: var(--fs-xs);
+    color: var(--accent);
+    padding-top: 0.45em;
+  }
+  .menu-footnote {
+    padding-bottom: var(--section);
+    max-width: 60rem;
+    font-size: var(--fs-sm);
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, onReady, hasMotion } from '../scripts/main';
+
+  /* ---------- Scroll-spy for the category bar ---------- */
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-cat-link]'));
+  const setActive = (id: string) => {
+    links.forEach((a) => {
+      const on = a.dataset.catLink === id;
+      a.classList.toggle('is-active', on);
+      if (on) {
+        a.setAttribute('aria-current', 'location');
+        const nav = a.closest('.menu-cats');
+        if (nav) nav.scrollTo({ left: a.offsetLeft - 16, behavior: hasMotion() ? 'smooth' : 'auto' });
+      } else a.removeAttribute('aria-current');
+    });
+  };
+  document.querySelectorAll<HTMLElement>('[data-menu-section]').forEach((sec) => {
+    ScrollTrigger.create({
+      trigger: sec,
+      start: 'top 45%',
+      end: 'bottom 45%',
+      onToggle: (self) => self.isActive && setActive(sec.id),
+    });
+  });
+
+  /* ---------- Dietary filters ---------- */
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+  const dishes = Array.from(document.querySelectorAll<HTMLElement>('[data-dish]'));
+  const status = document.querySelector('[data-filter-status]');
+  const active = new Set<string>();
+
+  const matches = (tags: string[]) =>
+    [...active].every((f) => (f === 'no-shellfish' ? !tags.includes('shellfish') : tags.includes(f)));
+
+  const apply = () => {
+    let shown = 0;
+    dishes.forEach((d) => {
+      const ok = matches((d.dataset.tags ?? '').split(' ').filter(Boolean));
+      d.classList.toggle('is-filtered', !ok);
+      if (ok) shown++;
+    });
+    document.querySelectorAll<HTMLElement>('.menu-section').forEach((sec) => {
+      const any = sec.querySelector('[data-dish]:not(.is-filtered)');
+      const empty = sec.querySelector<HTMLElement>('[data-empty]');
+      if (empty) empty.hidden = !!any;
+    });
+    if (hasMotion()) {
+      const visible = dishes.filter((d) => !d.classList.contains('is-filtered'));
+      gsap.fromTo(visible, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.015, overwrite: true });
+    }
+    if (status)
+      status.textContent = active.size
+        ? `Showing ${shown} of ${dishes.length} dishes.`
+        : `Showing all ${dishes.length} dishes.`;
+    ScrollTrigger.refresh();
+  };
+
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      const f = chip.dataset.filter!;
+      const on = chip.getAttribute('aria-pressed') !== 'true';
+      chip.setAttribute('aria-pressed', String(on));
+      on ? active.add(f) : active.delete(f);
+      apply();
+    }),
+  );
+
+  /* ---------- Doneness radiogroup ---------- */
+  const colors: Record<string, [string, string]> = {
+    blue: ['#6e1424', '#7e1d26'],
+    rare: ['#a3202f', '#93322b'],
+    'medium-rare': ['#c23b3f', '#9e3b31'],
+    medium: ['#d4706a', '#a2533f'],
+    'medium-well': ['#b98274', '#8f5a45'],
+    well: ['#8c6a5c', '#6f4c3b'],
+  };
+  const group = document.querySelector<HTMLElement>('[data-doneness]');
+  const radios = Array.from(group?.querySelectorAll<HTMLButtonElement>('[role="radio"]') ?? []);
+  const visual = document.querySelector<HTMLElement>('[data-d-visual]');
+  const tEl = document.querySelector('[data-d-temp]');
+  const cEl = document.querySelector('[data-d-c]');
+  const dEl = document.querySelector('[data-d-desc]');
+  const bar = document.querySelector<HTMLElement>('[data-d-bar]');
+
+  const select = (btn: HTMLButtonElement, focus = false) => {
+    radios.forEach((r) => {
+      const on = r === btn;
+      r.setAttribute('aria-checked', String(on));
+      r.tabIndex = on ? 0 : -1;
+    });
+    if (focus) btn.focus();
+    const [core, mid] = colors[btn.dataset.id!];
+    visual?.style.setProperty('--core', core);
+    visual?.style.setProperty('--mid', mid);
+    if (tEl) tEl.textContent = btn.dataset.temp!;
+    if (cEl) cEl.textContent = btn.dataset.c!;
+    if (dEl) dEl.textContent = btn.dataset.desc!;
+    if (bar) bar.style.left = `${(Number(btn.dataset.index) / (radios.length - 1)) * 100}%`;
+    if (hasMotion() && tEl) gsap.fromTo([tEl, dEl], { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', stagger: 0.05 });
+  };
+  radios.forEach((r, i) => {
+    r.addEventListener('click', () => select(r));
+    r.addEventListener('keydown', (e) => {
+      const keys: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+      if (e.key in keys) {
+        e.preventDefault();
+        select(radios[(i + keys[e.key] + radios.length) % radios.length], true);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        select(radios[0], true);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        select(radios[radios.length - 1], true);
+      }
+    });
+  });
+  const initial = radios.find((r) => r.getAttribute('aria-checked') === 'true');
+  if (initial && bar) bar.style.left = `${(Number(initial.dataset.index) / (radios.length - 1)) * 100}%`;
+
+  onReady(() => {
+    // Deep link (e.g. /menu/#raw-bar from the homepage)
+    if (location.hash) {
+      const target = document.querySelector(location.hash);
+      if (target) import('../scripts/main').then(({ scrollToEl }) => scrollToEl(target, -150));
+    }
+  });
+</script>

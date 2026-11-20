@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+const id = 'nl-' + Math.random().toString(36).slice(2, 7);
+---
+<form class="newsletter" data-newsletter novalidate>
+  <div class="field">
+    <label for={id}>Email address</label>
+    <div class="newsletter__form">
+      <input
+        id={id}
+        class="input"
+        type="email"
+        name="email"
+        autocomplete="email"
+        inputmode="email"
+        placeholder="you@example.com"
+        required
+        aria-describedby={`${id}-err ${id}-hint`}
+      />
+      <button class="newsletter__submit" type="submit" aria-label="Subscribe" data-cursor="hover">
+        <Icon name="arrow-right" />
+      </button>
+    </div>
+    <p class="field__error" id={`${id}-err`} role="alert"></p>
+    <p class="field__hint" id={`${id}-hint`} data-newsletter-status aria-live="polite">
+      Demo form: no email is stored or sent.
+    </p>
+  </div>
+</form>

@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { url } from '../data/site';
+---
+<Base title="Page not found" description="This page has gone up in smoke." noindex>
+  <section class="nf">
+    <div class="nf__glow" aria-hidden="true"></div>
+    <div class="container nf__inner">
+      <p class="eyebrow eyebrow--plain" data-reveal="fade" data-hero>Error 404</p>
+      <h1 class="nf__title" data-split="hero">Gone up in <em>smoke</em></h1>
+      <p class="lead" data-reveal="up" data-hero data-delay="0.3">The page you were looking for has been taken off the menu. Let us guide you back to the fire.</p>
+      <div class="nf__actions" data-reveal="up" data-hero data-delay="0.45">
+        <a class="btn" href={url('')}><span class="btn__label">Back to home</span><Icon name="arrow-right" /></a>
+        <a class="link" href={url('menu/')}>See the menu <Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    text-align: center;
+    padding-top: var(--header-h);
+  }
+  .nf__glow {
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    width: min(60rem, 130vw);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgb(240 90 36 / 0.22), transparent 70%);
+    pointer-events: none;
+  }
+  .nf__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--s-6);
+  }
+  .nf__title {
+    font-size: var(--fs-hero);
+    line-height: 0.92;
+  }
+  .nf__title :global(em) {
+    font-style: italic;
+    color: var(--accent-strong);
+  }
+  .nf .lead {
+    margin-inline: auto;
+  }
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-6);
+    align-items: center;
+    justify-content: center;
+  }
+</style>

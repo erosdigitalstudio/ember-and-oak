@@ -1,0 +1,384 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { site, url } from '../data/site';
+import heroImg from '../assets/img/bar-interior.jpg';
+
+const faqs = [
+  { q: 'Is there a dress code?', a: 'Smart casual. Jackets are welcome but never required; we ask guests to avoid athletic wear and caps in the dining room.' },
+  { q: 'Where can I park?', a: 'Complimentary valet is available at our Western Avenue entrance from 5 pm. Several public garages are within a two-block walk.' },
+  { q: 'Do you accommodate dietary restrictions?', a: 'Yes. Please note allergies when booking and tell your server; our kitchen can adapt most dishes, and we always have vegetarian options.' },
+  { q: 'Is the restaurant accessible?', a: 'Our dining room, Oak Bar and restrooms are step-free, with an elevator to the Cellar. Let us know if you need anything to make your visit comfortable.' },
+  { q: 'Do you offer gift cards?', a: 'Gift cards are available at the host stand and by phone, in any amount.' },
+];
+---
+<Base
+  title="Contact"
+  description="Contact Ember & Oak in Seattle: address, opening hours, phone, valet parking and answers to common questions. Send us a message any time."
+>
+  <PageHero eyebrow="Contact & Visit" image={heroImg} alt="The backlit bar with shelves of spirits and warm pendant lights" short position="center 45%">
+    <Fragment slot="title">Find us by <em>the fire</em></Fragment>
+    <Fragment slot="lead">
+      <p>On Western Avenue, a short walk from the Pike Place Market and the waterfront. The Oak Bar opens at four.</p>
+    </Fragment>
+  </PageHero>
+
+  <section class="section visit">
+    <div class="container visit__grid">
+      <div class="visit__info">
+        <div class="info-block" data-reveal="up">
+          <h2 class="info-block__title"><Icon name="map-pin" /> Address</h2>
+          <address>
+            Ember &amp; Oak<br />
+            {site.address.street}<br />
+            {site.address.city}, {site.address.region} {site.address.postal}
+          </address>
+          <p class="subtle info-block__note">Demo address. Ember &amp; Oak is a fictional restaurant.</p>
+        </div>
+        <div class="info-block" data-reveal="up" data-delay="0.05">
+          <h2 class="info-block__title"><Icon name="clock" /> Hours</h2>
+          <ul class="hours-list" role="list">
+            {site.hours.map((h) => (
+              <li data-day={h.days}><span>{h.days}</span><span class="tabular">{h.time}</span></li>
+            ))}
+          </ul>
+          <p class="open-now" data-open-now aria-live="polite"></p>
+        </div>
+        <div class="info-block" data-reveal="up" data-delay="0.1">
+          <h2 class="info-block__title"><Icon name="phone" /> Reach us</h2>
+          <p><a class="contact-link" href={site.phoneHref}>{site.phone}</a></p>
+          <p><a class="contact-link" href={`mailto:${site.email}`}>{site.email}</a></p>
+          <p><a class="contact-link" href={`mailto:${site.events}`}>{site.events}</a> <span class="subtle">· events</span></p>
+        </div>
+        <div class="info-block" data-reveal="up" data-delay="0.15">
+          <h2 class="info-block__title"><Icon name="car" /> Getting here</h2>
+          <p class="muted">Valet at the Western Avenue entrance from 5 pm. Five minutes on foot from Pike Place Market; ten from the Seattle Ferry Terminal.</p>
+        </div>
+      </div>
+
+      <figure class="map" data-reveal="image" aria-labelledby="map-cap">
+        <svg viewBox="0 0 600 600" class="map__svg" aria-hidden="true">
+          <defs>
+            <pattern id="water" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)">
+              <path d="M0 7h14" stroke="rgb(211 149 102 / .10)" stroke-width="1" />
+            </pattern>
+            <radialGradient id="glow">
+              <stop offset="0" stop-color="#ff7b3a" stop-opacity=".55" />
+              <stop offset="1" stop-color="#ff7b3a" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="600" height="600" fill="#141110" />
+          <!-- Elliott Bay -->
+          <path d="M0 0h250c-20 60-10 110 20 160s40 120 10 190-40 140-20 250H0z" fill="#0d0b0a" />
+          <path d="M0 0h250c-20 60-10 110 20 160s40 120 10 190-40 140-20 250H0z" fill="url(#water)" />
+          <path d="M250 0c-20 60-10 110 20 160s40 120 10 190-40 140-20 250" fill="none" stroke="rgb(211 149 102 / .45)" stroke-width="1.2" />
+          <!-- Piers -->
+          <g fill="#1d1815" stroke="rgb(211 149 102 / .25)">
+            <rect x="200" y="210" width="72" height="16" />
+            <rect x="196" y="270" width="84" height="16" />
+            <rect x="204" y="330" width="78" height="16" />
+            <rect x="214" y="420" width="62" height="16" />
+          </g>
+          <!-- Street grid (downtown runs diagonal to the shoreline) -->
+          <g stroke="rgb(244 237 227 / .09)" stroke-width="1">
+            <path d="M300 -20L620 300M340 -60L660 260M380 -100L700 220M260 20L620 380M240 80L600 440M250 160L600 510M260 250L590 580M280 330L560 610" />
+            <path d="M620 40L260 400M640 120L300 480M660 200L340 560M600 -20L270 310M560 -40L250 270" />
+          </g>
+          <!-- Western Avenue (highlighted) -->
+          <path d="M285 40C300 140 312 230 304 330S290 500 300 600" fill="none" stroke="rgb(211 149 102 / .55)" stroke-width="2" stroke-dasharray="1 0" />
+          <!-- Labels -->
+          <g font-family="Manrope Variable, sans-serif" font-size="11" letter-spacing="3" fill="rgb(244 237 227 / .45)">
+            <text x="40" y="300">ELLIOTT BAY</text>
+            <text x="430" y="150" fill="rgb(244 237 227 / .55)">PIKE PLACE</text>
+            <text x="430" y="166" fill="rgb(244 237 227 / .55)">MARKET</text>
+            <text x="318" y="520" transform="rotate(-84 318 520)" fill="rgb(211 149 102 / .7)">WESTERN AVE</text>
+            <text x="440" y="470">DOWNTOWN</text>
+          </g>
+          <circle cx="460" cy="145" r="3" fill="rgb(244 237 227 / .5)" />
+          <!-- Pin -->
+          <g transform="translate(306 262)">
+            <circle r="60" fill="url(#glow)" class="map__glow" />
+            <circle r="14" fill="none" stroke="#ff7b3a" stroke-width="1" class="map__pulse" />
+            <circle r="6" fill="#ff7b3a" />
+            <text x="18" y="-14" font-family="Cormorant Garamond Variable, serif" font-size="22" fill="#f4ede3" font-style="italic">Ember &amp; Oak</text>
+          </g>
+          <!-- Compass -->
+          <g transform="translate(548 548)" stroke="rgb(211 149 102 / .6)" fill="none">
+            <circle r="20" />
+            <path d="M0 -14L4 0L0 14L-4 0Z" fill="rgb(211 149 102 / .6)" />
+          </g>
+          <text x="544" y="518" font-family="Manrope Variable, sans-serif" font-size="10" fill="rgb(211 149 102 / .8)">N</text>
+        </svg>
+        <figcaption id="map-cap" class="media__caption">Illustrative map · not to scale</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section contact-form-section" aria-labelledby="msg-title">
+    <div class="container contact-grid">
+      <div class="contact-grid__intro">
+        <p class="eyebrow">Write to us</p>
+        <h2 id="msg-title" class="h2" data-split>Send a <em>message</em></h2>
+        <p class="lead" data-reveal="up">For reservations, the fastest way is <a href={url('reservations/')} class="inline-link">online booking</a>. For everything else, we’re listening.</p>
+      </div>
+
+      <div>
+        <form class="form" data-contact novalidate>
+          <div class="demo-note">
+            <Icon name="info" />
+            <p><strong>Demonstration form.</strong> Messages are validated and a reply is simulated; nothing is sent until a backend is connected.</p>
+          </div>
+          <div class="form-row form-row--2">
+            <div class="field">
+              <label for="c-name">Name<span class="req" aria-hidden="true">*</span></label>
+              <input id="c-name" class="input" name="name" autocomplete="name" required data-label="name" aria-describedby="c-name-err" />
+              <p class="field__error" id="c-name-err"></p>
+            </div>
+            <div class="field">
+              <label for="c-email">Email<span class="req" aria-hidden="true">*</span></label>
+              <input id="c-email" class="input" type="email" inputmode="email" name="email" autocomplete="email" required data-label="email" aria-describedby="c-email-err" />
+              <p class="field__error" id="c-email-err"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="c-topic">Topic</label>
+            <select id="c-topic" class="select" name="topic">
+              <option>General question</option>
+              <option>Feedback on a visit</option>
+              <option>Gift cards</option>
+              <option>Press &amp; partnerships</option>
+              <option>Careers</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="c-msg">Message<span class="req" aria-hidden="true">*</span></label>
+            <textarea id="c-msg" class="textarea" name="message" rows="5" required minlength="10" data-label="message" aria-describedby="c-msg-err"></textarea>
+            <p class="field__error" id="c-msg-err"></p>
+          </div>
+          <div class="contact-submit">
+            <button class="btn" type="submit"><span class="btn__label">Send message</span></button>
+            <p class="form-status" role="status" data-status></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="faq-title">
+    <div class="container contact-grid">
+      <h2 id="faq-title" class="h2" data-split>Good to <em>know</em></h2>
+      <div class="accordion">
+        {faqs.map((f) => (
+          <details>
+            <summary>{f.q}<span class="accordion__icon" aria-hidden="true"></span></summary>
+            <div class="accordion__body"><div>{f.a}</div></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .visit__grid {
+    display: grid;
+    gap: var(--s-8);
+  }
+  @media (min-width: 1000px) {
+    .visit__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-9);
+      align-items: start;
+    }
+    .map {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .visit__info {
+    display: grid;
+    gap: var(--s-7);
+  }
+  @media (min-width: 640px) and (max-width: 999px), (min-width: 1280px) {
+    .visit__info {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1280px) {
+    .visit__grid {
+      grid-template-columns: 1.15fr 1fr;
+    }
+  }
+  .info-block {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line);
+  }
+  .info-block__title {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    font-family: var(--f-sans);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .info-block address {
+    font-style: normal;
+    font-family: var(--f-display);
+    font-size: var(--fs-lg);
+    line-height: 1.35;
+  }
+  .info-block__note {
+    font-size: var(--fs-xs);
+  }
+  .info-block .hours-list {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+  .info-block .hours-list :global(li.is-today) {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .open-now {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .open-now :global(.dot) {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-subtle);
+  }
+  .open-now :global(.dot.is-open) {
+    background: var(--success);
+    box-shadow: 0 0 0 4px rgb(185 215 168 / 0.15);
+  }
+  .contact-link {
+    font-family: var(--f-display);
+    font-size: var(--fs-md);
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 600ms var(--ease-out), color var(--d-base);
+    overflow-wrap: anywhere;
+  }
+  .contact-link:hover {
+    background-size: 100% 1px;
+    color: var(--accent-strong);
+  }
+  .map {
+    border: 1px solid var(--line);
+  }
+  .map__svg {
+    width: 100%;
+    height: auto;
+  }
+  .map .media__caption {
+    padding: var(--s-3) var(--s-4);
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+  .map__pulse {
+    transform-origin: center;
+    animation: pulse 2.6s var(--ease-out) infinite;
+  }
+  @keyframes pulse {
+    from {
+      transform: scale(0.6);
+      opacity: 1;
+    }
+    to {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+  .contact-form-section {
+    background: var(--bg-deep);
+    border-block: 1px solid var(--line);
+  }
+  .contact-grid {
+    display: grid;
+    gap: var(--s-7);
+  }
+  @media (min-width: 1000px) {
+    .contact-grid {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: var(--s-9);
+    }
+  }
+  .contact-grid__intro {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+  .inline-link {
+    color: var(--accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .contact-submit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-5);
+  }
+</style>
+
+<script>
+  import { enhanceForm, validateForm, setLoading, fakeRequest } from '../scripts/forms';
+
+  /* Open-now indicator in Seattle time */
+  const openEl = document.querySelector<HTMLElement>('[data-open-now]');
+  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+  const day = now.getDay();
+  const mins = now.getHours() * 60 + now.getMinutes();
+  const schedule: Record<number, [number, number] | null> = {
+    0: [16 * 60 + 30, 21 * 60 + 30],
+    1: null,
+    2: [17 * 60, 22 * 60],
+    3: [17 * 60, 22 * 60],
+    4: [17 * 60, 22 * 60],
+    5: [17 * 60, 23 * 60],
+    6: [17 * 60, 23 * 60],
+  };
+  const todayKey = ['Sunday', 'Monday', 'Tue – Thu', 'Tue – Thu', 'Tue – Thu', 'Fri – Sat', 'Fri – Sat'][day];
+  document.querySelector(`[data-day="${todayKey}"]`)?.classList.add('is-today');
+  const h = schedule[day];
+  const open = !!h && mins >= h[0] && mins < h[1];
+  if (openEl) {
+    openEl.innerHTML = `<span class="dot${open ? ' is-open' : ''}" aria-hidden="true"></span>${open ? 'Open now' : 'Closed now'} <span style="opacity:.7">· Seattle time</span>`;
+  }
+
+  /* Contact form (demo) */
+  const form = document.querySelector<HTMLFormElement>('[data-contact]')!;
+  const status = form.querySelector<HTMLElement>('[data-status]')!;
+  enhanceForm(form);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.textContent = '';
+    status.className = 'form-status';
+    if (!validateForm(form)) {
+      status.className = 'form-status is-error';
+      status.textContent = 'Please correct the highlighted fields.';
+      return;
+    }
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    setLoading(btn, true);
+    await fakeRequest(1100);
+    setLoading(btn, false);
+    const name = String(new FormData(form).get('name')).split(' ')[0];
+    form.reset();
+    status.className = 'form-status is-success';
+    status.textContent = `Thank you, ${name}. In a live version we would reply within a day (demo: nothing was sent).`;
+  });
+</script>

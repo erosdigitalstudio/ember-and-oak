@@ -1,0 +1,60 @@
+---
+import Logo from './Logo.astro';
+import Newsletter from './Newsletter.astro';
+import { nav, site, url } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <Logo />
+        <p style="margin-top:1.5rem;max-width:22rem">
+          Letters from the hearth: new cuts in the aging room, the first Dungeness of the season, rare bottles from the cellar. Four times a year, never more.
+        </p>
+        <div style="margin-top:1.5rem;max-width:24rem">
+          <Newsletter />
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h2>Visit</h2>
+        <address>
+          {site.address.street}<br />
+          {site.address.city}, {site.address.region} {site.address.postal}<br />
+          <a href={site.phoneHref}>{site.phone}</a><br />
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </address>
+      </div>
+
+      <div class="footer-col">
+        <h2>Hours</h2>
+        <ul class="hours-list" role="list">
+          {site.hours.map((h) => (
+            <li><span>{h.days}</span><span class="tabular">{h.time}</span></li>
+          ))}
+        </ul>
+        <p style="margin-top:.75rem" class="subtle">{site.bar}</p>
+      </div>
+
+      <div class="footer-col">
+        <h2>Explore</h2>
+        <ul role="list">
+          {nav.map((item) => (
+            <li><a href={url(item.href)}>{item.label}</a></li>
+          ))}
+          <li><a href={url('reservations/')}>Reservations</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-wordmark" aria-hidden="true">Ember <em>&amp;</em> Oak</div>
+
+  <div class="footer-bottom">
+    <div class="container" style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between">
+      <p>© {year} Ember &amp; Oak · {site.studio.note}</p>
+      <p>Design &amp; development by <strong style="color:var(--text-muted);font-weight:600">{site.studio.name}</strong> · Photography via <a href="https://unsplash.com/license" rel="noopener" target="_blank">Unsplash</a></p>
+    </div>
+  </div>
+</footer>

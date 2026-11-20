@@ -1,0 +1,61 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  ratio?: string;
+  parallax?: boolean;
+  reveal?: boolean;
+  hover?: boolean;
+  eager?: boolean;
+  sizes?: string;
+  caption?: string;
+  class?: string;
+  cursorLabel?: string;
+  position?: string;
+  delay?: number;
+}
+
+const {
+  src,
+  alt,
+  ratio = '4 / 5',
+  parallax = false,
+  reveal = true,
+  hover = false,
+  eager = false,
+  sizes = '(min-width: 1200px) 50vw, 100vw',
+  caption,
+  class: cls,
+  cursorLabel,
+  position = 'center',
+  delay,
+} = Astro.props;
+
+const widths = [480, 768, 1080, 1440, 1920].filter((w) => w <= src.width);
+---
+<figure class:list={['photo', cls]}>
+  <div
+    class:list={['media', parallax && 'media--parallax', hover && 'media--hover']}
+    style={`aspect-ratio:${ratio}`}
+    data-reveal={reveal ? 'image' : undefined}
+    data-cursor-label={cursorLabel}
+    data-delay={delay}
+  >
+    <Image
+      src={src}
+      alt={alt}
+      widths={widths}
+      sizes={sizes}
+      format="webp"
+      quality={78}
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : undefined}
+      decoding={eager ? 'sync' : 'async'}
+      style={`object-position:${position}`}
+    />
+  </div>
+  {caption && <figcaption class="media__caption">{caption}</figcaption>}
+</figure>
